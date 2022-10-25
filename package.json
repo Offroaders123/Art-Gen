@@ -1,0 +1,6 @@
+{
+  "name": "art-gen",
+  "devDependencies": {
+    "@types/jsmediatags": "^3.9.3"
+  }
+}
