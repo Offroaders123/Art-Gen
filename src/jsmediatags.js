@@ -31,8 +31,7 @@ export async function fromPicture(picture){
     const { format: type = "", data = [] } = picture;
     const media = new Blob([new Uint8Array(data)],{ type });
     const source = window.URL.createObjectURL(media);
-
-    return loadImage(source);
+    return await loadImage(source);
   } catch {
     throw new TypeError("Could not construct an image from the picture data");
   }

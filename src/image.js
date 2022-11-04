@@ -12,3 +12,18 @@ export async function loadImage(src,image = new Image()){
   });
   return image;
 }
+
+/**
+ * Generates an image element from an inline SVG element.
+ * 
+ * @param { HTMLElement & SVGElement | SVGSVGElement } svg
+*/
+export async function fromSVG(svg){
+  try {
+    const media = new Blob([svg.outerHTML],{ type: "image/svg+xml" });
+    const source = window.URL.createObjectURL(media);
+    return await loadImage(source);
+  } catch (error){
+    throw error;
+  }
+}
