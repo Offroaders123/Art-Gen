@@ -49,4 +49,7 @@ export async function generateThumbnail(song){
   ctx.fillRect(0,0,width,height);
 
   ctx.drawImage(image,135,135,810,810);
+
+  const { title, artist, album } = tags;
+  console.log(title,artist,album);
 }
