@@ -1,6 +1,12 @@
 import { fromSVG } from "./image.js";
 import { readTags, fromPicture } from "./jsmediatags.js";
 
+const canvas = /** @type { HTMLCanvasElement } */
+(document.querySelector("canvas"));
+
+const ctx = /** @type { CanvasRenderingContext2D } */
+(canvas.getContext("2d"));
+
 const demo = await fetch(new URL("../test/26.m4a",import.meta.url))
 .then(response => response.blob());
 
@@ -12,16 +18,6 @@ const thumbnail = await generateThumbnail(demo);
  * @param { Blob } song
 */
 export async function generateThumbnail(song){
-  const canvas = document.querySelector("canvas");
-  if (canvas === null){
-    throw new ReferenceError("Cannot find canvas");
-  }
-
-  const ctx = canvas.getContext("2d");
-  if (ctx === null){
-    throw new SyntaxError("Cannot create canvas context");
-  }
-
   const tags = await readTags(song);
   console.log(tags);
 

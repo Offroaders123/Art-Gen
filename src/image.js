@@ -21,7 +21,7 @@ export async function loadImage(src,image = new Image()){
 export async function fromSVG(svg){
   try {
     const media = new Blob([svg.outerHTML],{ type: "image/svg+xml" });
-    const source = window.URL.createObjectURL(media);
+    const source = URL.createObjectURL(media);
     return await loadImage(source);
   } catch (error){
     throw error;
