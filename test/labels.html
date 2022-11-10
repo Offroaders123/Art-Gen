@@ -6,16 +6,10 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap">
   </head>
   <body>
-    <img width="640" style="position: absolute; z-index: -1;" src="./Artwork-Template.jpg">
+    <!-- <img width="640" style="position: absolute; z-index: -1;" src="./Artwork-Template.jpg"> -->
     <svg width="640" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <style>
-          svg {
-            background: #002b47;
-          }
-          foreignObject {
-            background: orange;
-          }
           div {
             width: 100%;
             height: 100%;
@@ -35,8 +29,16 @@
             margin-bottom: 44px;
           }
         </style>
+        <filter id="blur">
+          <feGaussianBlur stdDeviation="30" color-interpolation-filters="sRGB"/>
+          <feComponentTransfer>
+            <feFuncA type="discrete" tableValues="1"/>
+          </feComponentTransfer>
+        </filter>
       </defs>
-      <rect x="135" y="135" width="810" height="810" fill="gray"/>
+      <image x="0" y="0" width="1920" height="1080" filter="url(#blur)" href="./Artwork.jpg" preserveAspectRatio="xMidYMid slice"/>
+      <rect x="0" y="0" width="1920" height="1080" fill="rgb(0 0 0 / 0.7)"/>
+      <image x="135" y="135" width="810" height="810" href="./Artwork.jpg"/>
       <foreignObject x="1058" y="135" width="789" height="810">
         <div xmlns="http://www.w3.org/1999/xhtml">
           <span class="title">Cab Crossing</span>
