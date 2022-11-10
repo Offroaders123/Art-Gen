@@ -1,4 +1,5 @@
 import { ctx } from "./canvas.js";
+import { toDataURL } from "./embed.js";
 import { fromSVG } from "./image.js";
 import { readTags, fromPicture } from "./jsmediatags.js";
 
@@ -21,7 +22,7 @@ export async function generateThumbnail(song){
   const { title, artist, album } = tags;
   console.log(title,artist,album);
 
-  const vector = generateVector({ artwork, title, artist, album });
+  const vector = generateVector({ artwork: await toDataURL(artwork), title, artist, album });
 
   const labels = await fromSVG(vector);
 
