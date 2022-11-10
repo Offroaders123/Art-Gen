@@ -1,4 +1,4 @@
-import { canvas, ctx } from "./canvas.js";
+import { ctx } from "./canvas.js";
 import { fromSVG } from "./image.js";
 import { readTags, fromPicture } from "./jsmediatags.js";
 
@@ -15,32 +15,13 @@ export async function generateThumbnail(song){
     throw new TypeError("Cannot load artwork from song");
   }
 
-  const artwork = await fromPicture(tags.picture);
-
-  const { naturalHeight } = artwork;
-  const { width, height } = canvas;
-
-  ctx.translate(0,height / 2);
-  ctx.translate(0,-naturalHeight / 2);
-
-  ctx.filter = "blur(30px)";
-
-  for (let i = 0; i < 16; i++){
-    ctx.drawImage(artwork,0,0,width,naturalHeight);
-  }
-
-  ctx.resetTransform();
-  ctx.filter = "none";
-
-  ctx.fillStyle = "rgb(0 0 0 / 0.7)";
-  ctx.fillRect(0,0,width,height);
-
-  ctx.drawImage(artwork,135,135,810,810);
+  const { src: artwork } = await fromPicture(tags.picture);
+  console.log(artwork);
 
   const { title, artist, album } = tags;
   console.log(title,artist,album);
 
-  const vector = generateVector({ title, artist, album });
+  const vector = generateVector({ artwork, title, artist, album });
 
   const labels = await fromSVG(vector);
 
@@ -48,9 +29,9 @@ export async function generateThumbnail(song){
 }
 
 /**
- * @param { { title?: string; artist?: string; album?: string; } } options
+ * @param { { artwork?: string; title?: string; artist?: string; album?: string; } } options
 */
-export function generateVector({ title, artist, album } = { title: "", artist: "", album: "" }){
+export function generateVector({ artwork, title, artist, album } = { artwork: "", title: "", artist: "", album: "" }){
   const template = document.createElement("template");
 
   template.innerHTML = `
@@ -76,7 +57,16 @@ export function generateVector({ title, artist, album } = { title: "", artist: "
             margin-bottom: 44px;
           }
         </style>
+        <filter id="blur">
+          <feGaussianBlur stdDeviation="30" color-interpolation-filters="sRGB"/>
+          <feComponentTransfer>
+            <feFuncA type="discrete" tableValues="1"/>
+          </feComponentTransfer>
+        </filter>
       </defs>
+      <image x="0" y="0" width="1920" height="1080" filter="url(#blur)" href="${artwork}" preserveAspectRatio="xMidYMid slice"/>
+      <rect x="0" y="0" width="1920" height="1080" fill="rgb(0 0 0 / 0.7)"/>
+      <image x="135" y="135" width="810" height="810" href="${artwork}"/>
       <foreignObject x="1058" y="135" width="789" height="810">
         <div xmlns="http://www.w3.org/1999/xhtml">
           <span class="title">${title}</span>
