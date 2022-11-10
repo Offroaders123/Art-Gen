@@ -8,32 +8,34 @@
   <body>
     <img width="640" style="position: absolute; z-index: -1;" src="./Artwork-Template.jpg">
     <svg width="640" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
-      <style>
-        svg {
-          background: #002b47;
-        }
-        foreignObject {
-          background: orange;
-        }
-        div {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          color: white;
-          font-size: 50px;
-          font-family: "Noto Sans", monospace;
-        }
-        .title {
-          margin-bottom: 88px;
-          font-size: 70px;
-          font-weight: bold;
-        }
-        .artist {
-          margin-bottom: 44px;
-        }
-      </style>
+      <defs>
+        <style>
+          svg {
+            background: #002b47;
+          }
+          foreignObject {
+            background: orange;
+          }
+          div {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: white;
+            font-size: 50px;
+            font-family: "Noto Sans", monospace;
+          }
+          .title {
+            margin-bottom: 88px;
+            font-size: 70px;
+            font-weight: bold;
+          }
+          .artist {
+            margin-bottom: 44px;
+          }
+        </style>
+      </defs>
       <rect x="135" y="135" width="810" height="810" fill="gray"/>
       <foreignObject x="1058" y="135" width="789" height="810">
         <div xmlns="http://www.w3.org/1999/xhtml">
