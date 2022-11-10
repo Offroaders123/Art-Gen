@@ -40,6 +40,17 @@ export async function generateThumbnail(song){
   const { title, artist, album } = tags;
   console.log(title,artist,album);
 
+  const vector = generateVector({ title, artist, album });
+
+  const labels = await fromSVG(vector);
+
+  ctx.drawImage(labels,0,0,1920,1080);
+}
+
+/**
+ * @param { { title?: string; artist?: string; album?: string; } } options
+*/
+export function generateVector({ title, artist, album } = { title: "", artist: "", album: "" }){
   const template = document.createElement("template");
 
   template.innerHTML = `
@@ -76,7 +87,5 @@ export async function generateThumbnail(song){
 
   const vector = /** @type { SVGSVGElement } */ (template.content.querySelector("svg"));
 
-  const labels = await fromSVG(vector);
-
-  ctx.drawImage(labels,0,0,1920,1080);
+  return vector;
 }
