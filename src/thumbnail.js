@@ -55,26 +55,28 @@ export function generateVector({ title, artist, album } = { title: "", artist: "
 
   template.innerHTML = `
     <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
-      <style>
-        div {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          color: #ffffff;
-          font-size: 50px;
-          font-family: "Noto Sans", monospace;
-        }
-        .title {
-          margin-bottom: 88px;
-          font-size: 70px;
-          font-weight: bold;
-        }
-        .artist {
-          margin-bottom: 44px;
-        }
-      </style>
+      <defs>
+        <style>
+          div {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 50px;
+            font-family: "Noto Sans", monospace;
+          }
+          .title {
+            margin-bottom: 88px;
+            font-size: 70px;
+            font-weight: bold;
+          }
+          .artist {
+            margin-bottom: 44px;
+          }
+        </style>
+      </defs>
       <foreignObject x="1058" y="135" width="789" height="810">
         <div xmlns="http://www.w3.org/1999/xhtml">
           <span class="title">${title}</span>
