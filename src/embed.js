@@ -36,3 +36,37 @@ export async function toDataURL(source){
     throw error;
   }
 }
+
+/**
+ * Embeds URL declarations into a CSS string.
+ * 
+ * @param { string } media
+*/
+export async function embedCSSURLs(media){
+  const matches = [...media.matchAll(/url\((.*?)\)/g)];
+  console.log(matches);
+
+  let offset = 0;
+
+  const resources = await Promise.all(
+    matches.map(
+      async ({ 0: match, 1: src, index = 0 }) => {
+        const resource = `url(${await toDataURL(src)})`;
+        const diff = resource.length - match.length;
+        console.log(diff);
+        return { match, resource, index, diff };
+      }
+    )
+  );
+  console.log(resources);
+
+  let result = media;
+
+  for (const { match, resource, index, diff } of resources){
+    console.log(index,match);
+    result = result.slice(0,index + offset) + resource + result.slice(index + offset + match.length);
+    offset += diff;
+  }
+
+  return result;
+}
