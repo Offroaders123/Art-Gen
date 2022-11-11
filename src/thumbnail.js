@@ -1,7 +1,13 @@
 import { ctx } from "./canvas.js";
-import { toDataURL } from "./embed.js";
+import { toDataURL, embedCSSURLs } from "./embed.js";
 import { fromSVG } from "./image.js";
 import { readTags, fromPicture } from "./jsmediatags.js";
+
+export const NotoSans = fetch("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap")
+.then(response => response.text())
+.then(embedCSSURLs)
+.then(media => new Blob([media],{ type: "text/css" }))
+.then(toDataURL);
 
 /**
  * Generates a video thumbnail for a given song file.
@@ -22,7 +28,7 @@ export async function generateThumbnail(song){
   const { title, artist, album } = tags;
   console.log(title,artist,album);
 
-  const vector = generateVector({ artwork: await toDataURL(artwork), title, artist, album });
+  const vector = await generateVector({ artwork: await toDataURL(artwork), title, artist, album });
 
   const labels = await fromSVG(vector);
 
@@ -32,13 +38,14 @@ export async function generateThumbnail(song){
 /**
  * @param { { artwork?: string; title?: string; artist?: string; album?: string; } } options
 */
-export function generateVector({ artwork, title, artist, album } = { artwork: "", title: "", artist: "", album: "" }){
+export async function generateVector({ artwork, title, artist, album } = { artwork: "", title: "", artist: "", album: "" }){
   const template = document.createElement("template");
 
   template.innerHTML = `
     <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <style>
+          @import url(${await NotoSans});
           div {
             width: 100%;
             height: 100%;

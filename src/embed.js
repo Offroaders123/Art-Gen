@@ -44,7 +44,6 @@ export async function toDataURL(source){
 */
 export async function embedCSSURLs(media){
   const matches = [...media.matchAll(/url\((.*?)\)/g)];
-  console.log(matches);
 
   let offset = 0;
 
@@ -53,17 +52,14 @@ export async function embedCSSURLs(media){
       async ({ 0: match, 1: src, index = 0 }) => {
         const resource = `url(${await toDataURL(src)})`;
         const diff = resource.length - match.length;
-        console.log(diff);
         return { match, resource, index, diff };
       }
     )
   );
-  console.log(resources);
 
   let result = media;
 
   for (const { match, resource, index, diff } of resources){
-    console.log(index,match);
     result = result.slice(0,index + offset) + resource + result.slice(index + offset + match.length);
     offset += diff;
   }
