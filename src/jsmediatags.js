@@ -1,4 +1,3 @@
-import { loadImage } from "./image.js";
 const { jsmediatags } = window;
 
 /**
@@ -22,17 +21,11 @@ export async function readTags(data){
 }
 
 /**
- * Reads a Picture tag, and returns an equivalent Image object for that data.
+ * Reads a Picture tag, and returns an equivalent Blob for that data.
  * 
  * @param { PictureType } picture
 */
-export async function fromPicture(picture){
-  try {
-    const { format: type = "", data = [] } = picture;
-    const media = new Blob([new Uint8Array(data)],{ type });
-    const source = URL.createObjectURL(media);
-    return await loadImage(source);
-  } catch {
-    throw new TypeError("Could not construct an image from the picture data");
-  }
+export function fromPicture(picture){
+  const { format: type, data } = picture;
+  return new Blob([new Uint8Array(data)],{ type });
 }

@@ -1,4 +1,4 @@
-import { ctx } from "./canvas.js";
+import { canvas, ctx } from "./canvas.js";
 import { toDataURL, embedCSSURLs } from "./embed.js";
 import { fromSVG } from "./image.js";
 import { readTags, fromPicture } from "./jsmediatags.js";
@@ -22,7 +22,7 @@ export async function generateThumbnail(song){
     throw new TypeError("Cannot load artwork from song");
   }
 
-  const { src: artwork } = await fromPicture(tags.picture);
+  const artwork = fromPicture(tags.picture);
   console.log(artwork);
 
   const { title, artist, album } = tags;
@@ -33,6 +33,10 @@ export async function generateThumbnail(song){
   const labels = await fromSVG(vector);
 
   ctx.drawImage(labels,0,0,1920,1080);
+
+  const blob = await new Promise(resolve => canvas.toBlob(resolve));
+
+  return blob;
 }
 
 /**

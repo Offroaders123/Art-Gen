@@ -1,37 +1,25 @@
 /**
- * Generates a Data URL from a given Blob or URL.
+ * Generates a Data URL from a given Blob or text string.
  * 
  * @param { Blob | string } source
 */
-export async function toDataURL(source){
+export async function toDataURL(source,type = "data:text/plain;"){
   try {
-    /** @type { Blob } */
-    const media = await new Promise(async (resolve,reject) => {
-      switch (true){
-        case typeof source === "string": {
-          try {
-            resolve(await fetch(/** @type { string } */ (source))
-            .then(response => response.blob()));
-          } catch (error){
-            reject(error);
-          }
-          break;
-        }
-        case source instanceof Blob: {
-          resolve(/** @type { Blob } */ (source));
-          break;
-        }
+    switch (true){
+      case typeof source === "string": {
+        return `${type}${encodeURIComponent(/** @type { string } */ (source))}`;
       }
-    });
-
-    const reader = new FileReader();
-    await new Promise((resolve,reject) => {
-      reader.addEventListener("load",resolve,{ once: true });
-      reader.addEventListener("error",reject,{ once: true });
-      reader.readAsDataURL(media);
-    });
-
-    return /** @type { string } */ (reader.result);
+      case source instanceof Blob: {
+        const reader = new FileReader();
+        await new Promise((resolve,reject) => {
+          reader.addEventListener("load",resolve,{ once: true });
+          reader.addEventListener("error",reject,{ once: true });
+          reader.readAsDataURL(/** @type { Blob } */ (source));
+        });
+        return /** @type { string } */ (reader.result);
+      }
+      default: throw new TypeError("Passed in incorrect data");
+    }
   } catch (error){
     throw error;
   }
@@ -50,7 +38,11 @@ export async function embedCSSURLs(media){
   const resources = await Promise.all(
     matches.map(
       async ({ 0: match, 1: src, index = 0 }) => {
-        const resource = `url(${await toDataURL(src)})`;
+        const resource = `url(${
+          await fetch(src)
+          .then(response => response.blob())
+          .then(toDataURL)
+        })`;
         const diff = resource.length - match.length;
         return { match, resource, index, diff };
       }
