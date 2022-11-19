@@ -1,25 +1,30 @@
 /**
- * Generates a Data URL from a given Blob or text string.
+ * Generates a Data URL from a given text string. Accepts a text MIME type.
  * 
- * @param { Blob | string } source
+ * @param { string } media
+ * @param { object } options
+ * @param { string } [options.type] Defaults to `text/plain`
 */
-export async function toDataURL(source,type = "data:text/plain;"){
+export function toDataURLComponent(media,{ type = "text/plain" } = {}){
+  const prefix = `data:${type};charset=utf8,`;
+  const data = encodeURIComponent(media);
+  return `${prefix}${data}`;
+}
+
+/**
+ * Generates a Base64 Data URL from a given Blob.
+ * 
+ * @param { Blob } media
+*/
+export async function toDataURLBase64(media){
   try {
-    switch (true){
-      case typeof source === "string": {
-        return `${type}${encodeURIComponent(/** @type { string } */ (source))}`;
-      }
-      case source instanceof Blob: {
-        const reader = new FileReader();
-        await new Promise((resolve,reject) => {
-          reader.addEventListener("load",resolve,{ once: true });
-          reader.addEventListener("error",reject,{ once: true });
-          reader.readAsDataURL(/** @type { Blob } */ (source));
-        });
-        return /** @type { string } */ (reader.result);
-      }
-      default: throw new TypeError("Passed in incorrect data");
-    }
+    const reader = new FileReader();
+    await new Promise((resolve,reject) => {
+      reader.addEventListener("load",resolve,{ once: true });
+      reader.addEventListener("error",reject,{ once: true });
+      reader.readAsDataURL(media);
+    });
+    return /** @type { string } */ (reader.result);
   } catch (error){
     throw error;
   }
@@ -41,7 +46,7 @@ export async function embedCSSURLs(media){
         const resource = `url(${
           await fetch(src)
           .then(response => response.blob())
-          .then(toDataURL)
+          .then(toDataURLBase64)
         })`;
         const diff = resource.length - match.length;
         return { match, resource, index, diff };

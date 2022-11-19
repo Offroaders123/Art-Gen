@@ -1,5 +1,5 @@
 import { canvas, ctx } from "./canvas.js";
-import { toDataURL, embedCSSURLs } from "./embed.js";
+import { toDataURLBase64, embedCSSURLs } from "./embed.js";
 import { fromSVG } from "./image.js";
 import { readTags, fromPicture } from "./jsmediatags.js";
 
@@ -7,7 +7,7 @@ export const NotoSans = fetch("https://fonts.googleapis.com/css2?family=Noto+San
 .then(response => response.text())
 .then(embedCSSURLs)
 .then(media => new Blob([media],{ type: "text/css" }))
-.then(toDataURL);
+.then(toDataURLBase64);
 
 /**
  * Generates a video thumbnail for a given song file.
@@ -28,7 +28,7 @@ export async function generateThumbnail(song){
   const { title, artist, album } = tags;
   console.log(title,artist,album);
 
-  const vector = await generateVector({ artwork: await toDataURL(artwork), title, artist, album });
+  const vector = await generateVector({ artwork: await toDataURLBase64(artwork), title, artist, album });
 
   const labels = await fromSVG(vector);
 

@@ -1,4 +1,4 @@
-import { toDataURL } from "./embed.js";
+import { toDataURLComponent } from "./embed.js";
 
 /**
  * Loads an image from a specified URL.
@@ -22,7 +22,7 @@ export async function loadImage(src,image = new Image()){
 */
 export async function fromSVG(svg){
   try {
-    const source = await toDataURL(svg.outerHTML,"data:image/svg+xml;charset=utf8,");
+    const source = toDataURLComponent(svg.outerHTML,{ type: "image/svg+xml" });
     return await loadImage(source);
   } catch (error){
     throw error;
