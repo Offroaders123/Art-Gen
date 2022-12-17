@@ -1,7 +1,6 @@
 {
   "name": "art-gen",
   "devDependencies": {
-    "@ffmpeg/ffmpeg": "^0.11.6",
     "@types/jsmediatags": "^3.9.3"
   }
 }

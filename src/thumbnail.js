@@ -16,17 +16,17 @@ export const NotoSans = fetch("https://fonts.googleapis.com/css2?family=Noto+San
 */
 export async function generateThumbnail(song){
   const tags = await readTags(song);
-  // console.log(tags);
+  console.log(tags);
 
   if (typeof tags.picture === "undefined"){
     throw new TypeError("Cannot load artwork from song");
   }
 
   const artwork = fromPicture(tags.picture);
-  // console.log(artwork);
+  console.log(artwork);
 
   const { title, artist, album } = tags;
-  // console.log(title,artist,album);
+  console.log(title,artist,album);
 
   const vector = await generateVector({ artwork: await toDataURLBase64(artwork), title, artist, album });
 
