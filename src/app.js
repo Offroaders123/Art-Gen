@@ -1,7 +1,7 @@
 import FFmpeg from "./ffmpeg.js";
 import { generateThumbnail } from "./thumbnail.js";
 
-await navigator.serviceWorker.register("../service-worker.js");
+await navigator.serviceWorker.register(new URL("../service-worker.js",import.meta.url));
 
 const audio = await fetch(new URL("../test/26.m4a",import.meta.url))
 .then(response => response.blob());
