@@ -1,5 +1,3 @@
-export const canvas = /** @type { HTMLCanvasElement } */
-(document.querySelector("canvas"));
+export const canvas = document.querySelector("canvas")!;
 
-export const ctx = /** @type { CanvasRenderingContext2D } */
-(canvas.getContext("2d"));
+export const ctx = canvas.getContext("2d")!;

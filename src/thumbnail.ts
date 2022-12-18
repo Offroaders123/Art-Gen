@@ -11,10 +11,8 @@ export const NotoSans = fetch("https://fonts.googleapis.com/css2?family=Noto+San
 
 /**
  * Generates a video thumbnail for a given song file.
- * 
- * @param { Blob } song
 */
-export async function generateThumbnail(song){
+export async function generateThumbnail(song: Blob){
   const tags = await readTags(song);
   console.log(tags);
 
@@ -34,18 +32,21 @@ export async function generateThumbnail(song){
 
   ctx.drawImage(labels,0,0,1920,1080);
 
-  /** @type { Blob } */
-  const blob = await new Promise((resolve,reject) => canvas.toBlob(blob => {
+  const blob = await new Promise<Blob>((resolve,reject) => canvas.toBlob(blob => {
     (blob !== null) ? resolve(blob) : reject("Canvas data was null!");
   }));
 
   return blob;
 }
 
-/**
- * @param { { artwork?: string; title?: string; artist?: string; album?: string; } } options
-*/
-export async function generateVector({ artwork, title, artist, album } = { artwork: "", title: "", artist: "", album: "" }){
+export interface GenerateVectorOptions {
+  artwork?: string;
+  title?: string;
+  artist?: string;
+  album?: string;
+}
+
+export async function generateVector({ artwork, title, artist, album }: GenerateVectorOptions = { artwork: "", title: "", artist: "", album: "" }){
   const template = document.createElement("template");
 
   template.innerHTML = `
@@ -92,7 +93,7 @@ export async function generateVector({ artwork, title, artist, album } = { artwo
     </svg>
   `;
 
-  const vector = /** @type { SVGSVGElement } */ (template.content.querySelector("svg"));
+  const vector = template.content.querySelector("svg")!;
 
   return vector;
 }

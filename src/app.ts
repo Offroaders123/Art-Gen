@@ -6,10 +6,7 @@ const audio = await fetch(new URL("../test/26.m4a",import.meta.url))
 const image = await generateThumbnail(audio);
 console.log(image);
 
-/**
- * @param { File } data
-*/
-function saveFile(data){
+function saveFile(data: File){
   const anchor = document.createElement("a");
   const link = URL.createObjectURL(data);
   anchor.download = link;
