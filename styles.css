@@ -1,4 +1,6 @@
 *, *::before, *::after {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
@@ -11,12 +13,21 @@ body {
   margin: 0;
   width: 100%;
   height: 100%;
+  display: flex;
+  gap: 0.5em;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   font-family: system-ui, sans-serif;
 }
 
 canvas {
+  position: absolute;
   width: 100%;
   height: 100%;
   display: block;
   object-fit: contain;
+  opacity: 50%;
+  filter: blur(30px);
+  z-index: -1;
 }

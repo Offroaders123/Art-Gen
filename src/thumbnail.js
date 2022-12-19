@@ -1,4 +1,4 @@
-import { canvas, ctx } from "./canvas.js";
+import { canvas, ctx } from "./dom.js";
 import { toDataURLBase64, embedCSSURLs } from "./embed.js";
 import { fromSVG } from "./image.js";
 import { readTags, fromPicture } from "./jsmediatags.js";
