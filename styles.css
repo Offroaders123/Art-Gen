@@ -14,11 +14,35 @@ body {
   width: 100%;
   height: 100%;
   display: flex;
-  gap: 0.5em;
+  gap: 1em;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   font-family: system-ui, sans-serif;
+}
+
+input[type="file"][data-running] {
+  display: none;
+}
+
+progress:indeterminate {
+  display: none;
+}
+
+div[data-grid] {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(20rem,1fr));
+  grid-template-rows: repeat(auto-fill,minmax(15rem,1fr));
+  z-index: -1;
+}
+
+div[data-grid] img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 canvas {
@@ -28,6 +52,6 @@ canvas {
   display: block;
   object-fit: contain;
   opacity: 50%;
-  filter: blur(30px);
-  z-index: -1;
+  filter: blur(10px);
+  z-index: -2;
 }
