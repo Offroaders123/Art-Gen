@@ -58,7 +58,8 @@ async function makeCard(thumbnail){
     image.src = link;
   });
 
-  URL.revokeObjectURL(link);
+  // Can't right-click and download the thumbnail if the Object URL has already been revoked.
+  // URL.revokeObjectURL(link);
   grid.append(image);
 }
 
