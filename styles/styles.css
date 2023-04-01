@@ -21,12 +21,31 @@ body {
   font-family: system-ui, sans-serif;
 }
 
-input[type="file"][data-running] {
+section {
+  display: flex;
+  gap: 0.25em;
+  flex-direction: column;
+}
+
+body[data-running] section {
   display: none;
+}
+
+textarea {
+  padding: 6px;
+  font-size: 13px;
+  font-family: ui-monospace, monospace;
+  line-height: 1.4;
 }
 
 progress:indeterminate {
   display: none;
+}
+
+::placeholder {
+  color: inherit;
+  opacity: 0.55;
+  white-space: pre;
 }
 
 div[data-grid] {

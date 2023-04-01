@@ -1,4 +1,4 @@
-import { input, progress, grid } from "./dom.js";
+import { songInput, songNamesEditor, artworkInput, progress, grid } from "./dom.js";
 import { generateThumbnail } from "./thumbnail.js";
 
 // const audio = await fetch(new URL("../test/26.m4a",import.meta.url))
@@ -7,7 +7,7 @@ import { generateThumbnail } from "./thumbnail.js";
 // const images = await runGenerator(audio,audio,audio,audio);
 // console.log(images);
 
-input.addEventListener("change",async ({ target }) => {
+songInput.addEventListener("change",async ({ target }) => {
   if (!(target instanceof HTMLInputElement)) return;
 
   const files = target.files!;
@@ -18,13 +18,21 @@ input.addEventListener("change",async ({ target }) => {
   target.value = "";
 });
 
+songNamesEditor.placeholder = `[
+  {
+    "title": <string>,
+    "artist": <string>,
+    "album": <string>
+  }
+]`;
+
 /**
  * Runs the thumbnail generator over an array of song files.
 */
 async function runGenerator(...songs: Blob[]){
   const thumbnails: Blob[] = [];
-  
-  input.dataset.running = "";
+
+  document.body.dataset.running = "";
   progress.value = 0;
   progress.max = songs.length;
 
@@ -35,9 +43,9 @@ async function runGenerator(...songs: Blob[]){
     thumbnails.push(thumbnail);
     progress.value = i + 1;
   }
-  
+
   progress.removeAttribute("value");
-  delete input.dataset.running;
+  delete document.body.dataset.running;
 
   return thumbnails;
 }
