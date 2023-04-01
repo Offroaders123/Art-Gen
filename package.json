@@ -1,5 +1,11 @@
 {
   "name": "art-gen",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "npx tsc",
+    "dev": "npx tsc -w"
+  },
   "devDependencies": {
     "@types/jsmediatags": "^3.9.3"
   }

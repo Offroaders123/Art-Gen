@@ -1,13 +1,10 @@
 {
   "compilerOptions": {
-    "allowJs": true,
-    "checkJs": true,
     "rootDir": "./src",
     "outDir": "./dist",
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "NodeNext",
     "target": "ESNext",
-    "noEmit": true,
     "strict": true
   }
 }
