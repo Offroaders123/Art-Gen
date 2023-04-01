@@ -10,7 +10,7 @@ import { generateThumbnail } from "./thumbnail.js";
 input.addEventListener("change",async ({ target }) => {
   if (!(target instanceof HTMLInputElement)) return;
 
-  const files = /** @type { FileList } */ (target.files);
+  const files = target.files!;
 
   const thumbnails = await runGenerator(...files);
   console.log(thumbnails);
@@ -20,12 +20,9 @@ input.addEventListener("change",async ({ target }) => {
 
 /**
  * Runs the thumbnail generator over an array of song files.
- * 
- * @param { ...Blob } songs
 */
-async function runGenerator(...songs){
-  /** @type { Blob[] } */
-  const thumbnails = [];
+async function runGenerator(...songs: Blob[]){
+  const thumbnails: Blob[] = [];
   
   input.dataset.running = "";
   progress.value = 0;
@@ -45,10 +42,7 @@ async function runGenerator(...songs){
   return thumbnails;
 }
 
-/**
- * @param { Blob } thumbnail
-*/
-async function makeCard(thumbnail){
+async function makeCard(thumbnail: Blob){
   const image = new Image();
   const link = URL.createObjectURL(thumbnail);
 
@@ -63,10 +57,7 @@ async function makeCard(thumbnail){
   grid.append(image);
 }
 
-/**
- * @param { File } data
-*/
-function saveFile(data){
+function saveFile(data: File){
   const anchor = document.createElement("a");
   const link = URL.createObjectURL(data);
   anchor.download = link;

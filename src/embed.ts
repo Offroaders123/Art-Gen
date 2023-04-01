@@ -1,11 +1,14 @@
+export interface ToDataURLComponentOptions {
+  /**
+   * Defaults to `text/plain`
+  */
+  type?: string;
+}
+
 /**
  * Generates a Data URL from a given text string. Accepts a text MIME type.
- * 
- * @param { string } media
- * @param { object } options
- * @param { string } [options.type] Defaults to `text/plain`
 */
-export function toDataURLComponent(media,{ type = "text/plain" } = {}){
+export function toDataURLComponent(media: string, { type = "text/plain" }: ToDataURLComponentOptions = {}){
   const prefix = `data:${type};charset=utf8,`;
   const data = encodeURIComponent(media);
   return `${prefix}${data}`;
@@ -13,10 +16,8 @@ export function toDataURLComponent(media,{ type = "text/plain" } = {}){
 
 /**
  * Generates a Base64 Data URL from a given Blob.
- * 
- * @param { Blob } media
 */
-export async function toDataURLBase64(media){
+export async function toDataURLBase64(media: Blob){
   try {
     const reader = new FileReader();
     await new Promise((resolve,reject) => {
@@ -24,7 +25,7 @@ export async function toDataURLBase64(media){
       reader.addEventListener("error",reject,{ once: true });
       reader.readAsDataURL(media);
     });
-    return /** @type { string } */ (reader.result);
+    return reader.result! as string;
   } catch (error){
     throw error;
   }
@@ -32,10 +33,8 @@ export async function toDataURLBase64(media){
 
 /**
  * Embeds URL declarations into a CSS string.
- * 
- * @param { string } media
 */
-export async function embedCSSURLs(media){
+export async function embedCSSURLs(media: string){
   const matches = [...media.matchAll(/url\((.*?)\)/g)];
 
   let offset = 0;

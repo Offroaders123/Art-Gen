@@ -1,18 +1,15 @@
-const { jsmediatags } = window;
+import type { Tags, PictureType } from "jsmediatags/types";
 
-/**
- * @typedef { import("jsmediatags/types").Tags } Tags
- * @typedef { import("jsmediatags/types").PictureType } PictureType
-*/
+const { jsmediatags } = window;
 
 /**
  * Reads the media tags for a given song file.
  * 
- * @param { string | Blob } data Accepts either a URL string or a Blob object.
- * @returns { Promise<Tags> } Resolves to a Tags object.
+ * @param data Accepts either a URL string or a Blob object.
+ * @returns Resolves to a Tags object.
 */
-export async function readTags(data){
-  return new Promise((resolve,reject) => {
+export async function readTags(data: string | Blob){
+  return new Promise<Tags>((resolve,reject) => {
     jsmediatags.read(data,{
       onSuccess: ({ tags }) => resolve(tags),
       onError: reject
@@ -22,10 +19,8 @@ export async function readTags(data){
 
 /**
  * Reads a Picture tag, and returns an equivalent Blob for that data.
- * 
- * @param { PictureType } picture
 */
-export function fromPicture(picture){
+export function fromPicture(picture: PictureType){
   const { format: type, data } = picture;
   return new Blob([new Uint8Array(data)],{ type });
 }
