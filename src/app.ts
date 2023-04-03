@@ -18,14 +18,6 @@ songInput.addEventListener("change",async ({ target }) => {
   target.value = "";
 });
 
-songNamesEditor.placeholder = `[
-  {
-    "title": <string>,
-    "artist": <string>,
-    "album": <string>
-  }
-]`;
-
 /**
  * Runs the thumbnail generator over an array of song files.
 */
