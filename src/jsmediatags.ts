@@ -24,3 +24,5 @@ export function fromPicture(picture: PictureType){
   const { format: type, data } = picture;
   return new Blob([new Uint8Array(data)],{ type });
 }
+
+export type { Tags, PictureType };

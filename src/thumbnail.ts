@@ -1,7 +1,7 @@
 import { canvas, ctx } from "./dom.js";
 import { toDataURLBase64, embedCSSURLs } from "./embed.js";
 import { fromSVG } from "./image.js";
-import { readTags, fromPicture } from "./jsmediatags.js";
+import { Tags, readTags, fromPicture } from "./jsmediatags.js";
 
 export const NotoSans = fetch("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap")
 .then(response => response.text())
@@ -10,10 +10,10 @@ export const NotoSans = fetch("https://fonts.googleapis.com/css2?family=Noto+San
 .then(toDataURLBase64);
 
 /**
- * Generates a video thumbnail for a given song file.
+ * Generates a video thumbnail for a given song file, or song artwork and metadata.
 */
-export async function generateThumbnail(song: Blob){
-  const tags = await readTags(song);
+export async function generateThumbnail(song: Blob | Tags){
+  const tags = (song instanceof Blob) ? await readTags(song) : song;
   console.log(tags);
 
   if (typeof tags.picture === "undefined"){
