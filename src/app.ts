@@ -115,12 +115,17 @@ async function runGenerator(...songs: (Blob | Tags)[]){
   progress.value = 0;
   progress.max = songs.length;
 
-  for (let i = 0; i < songs.length; i++){
-    const song = songs[i];
-    const thumbnail = await generateThumbnail(song);
-    makeCard(thumbnail);
-    thumbnails.push(thumbnail);
-    progress.value = i + 1;
+  try {
+    for (let i = 0; i < songs.length; i++){
+      const song = songs[i];
+      const thumbnail = await generateThumbnail(song);
+      makeCard(thumbnail);
+      thumbnails.push(thumbnail);
+      progress.value = i + 1;
+    }
+  } catch (error){
+    console.error(error);
+    alert(`Error: ${JSON.stringify(error)}`);
   }
 
   progress.removeAttribute("value");
