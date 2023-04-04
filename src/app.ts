@@ -94,13 +94,21 @@ artworkInput.addEventListener("change",async function(){
     return { format, data } as PictureType;
   });
 
-  const songTags = JSON.parse(songNamesEditor.value) as SongTags;
-  console.log(...songTags);
-  
+  let songTags: SongTags;
+
+  try {
+    songTags = JSON.parse(songNamesEditor.value) as SongTags;
+    console.log(...songTags);
+  } catch (error){
+    console.error(error);
+    alert(error);
+    return;
+  }
+
   for (const tags of songTags){
     tags.picture = picture;
   }
-  
+
   const images = await runGenerator(...songTags);
   console.log(images);
 });
