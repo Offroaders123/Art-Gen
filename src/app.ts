@@ -85,6 +85,8 @@ artworkInput.addEventListener("change",async function(){
   const [file] = this.files!;
   console.log(file);
 
+  this.value = "";
+
   const picture = await file.arrayBuffer()
   .then(buffer => {
     const { type: format } = file;
@@ -101,8 +103,6 @@ artworkInput.addEventListener("change",async function(){
   
   const images = await runGenerator(...songTags);
   console.log(images);
-
-  this.value = "";
 });
 
 /**
@@ -125,7 +125,11 @@ async function runGenerator(...songs: (Blob | Tags)[]){
     }
   } catch (error){
     console.error(error);
-    alert(`Error: ${JSON.stringify(error)}`);
+    alert(
+      (error instanceof Error)
+        ? error
+        : `Error: ${JSON.stringify(error)}`
+    );
   }
 
   progress.removeAttribute("value");
