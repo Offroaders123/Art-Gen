@@ -2,6 +2,8 @@
 import { argv, exit } from "node:process";
 import { readFile } from "node:fs/promises";
 import { readSong } from "./jsmediatags.js";
+import { makeThumbSrc } from "./thumbnail.js";
+import { launch } from "puppeteer";
 
 /**
  * See {@linkcode argv} for more info.
@@ -22,6 +24,13 @@ console.log(songData,"\n");
 
 const mediaTags = await readSong(songData);
 console.log(mediaTags);
+
+const thumbnailSrc = makeThumbSrc(mediaTags);
+console.log(thumbnailSrc);
+
+const browser = await launch({ headless: false });
+const page = await browser.newPage();
+page.goto(thumbnailSrc);
 
 } catch (error: any){
   console.error(
