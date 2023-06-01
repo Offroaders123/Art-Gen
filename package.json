@@ -3,10 +3,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "npx tsc",
-    "dev": "npx tsc -w"
+    "build": "tsc; vite build --base ./ --target esnext",
+    "dev": "vite --host --port 5500 --base ./",
+    "preview": "vite preview --host --port 5500 --base ./"
   },
   "devDependencies": {
-    "@types/jsmediatags": "^3.9.3"
+    "@types/jsmediatags": "^3.9.3",
+    "typescript": "^5.0.4",
+    "vite": "^4.3.9"
   }
 }
