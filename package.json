@@ -10,10 +10,12 @@
     "dev": "tsc -w"
   },
   "devDependencies": {
+    "@types/jsmediatags": "^3.9.3",
     "@types/node": "^20.2.5",
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "jsmediatags": "^3.9.7",
     "puppeteer": "^20.5.0"
   }
 }
