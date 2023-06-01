@@ -2,14 +2,18 @@
   "name": "art-gen",
   "private": true,
   "type": "module",
+  "bin": {
+    "art-gen": "./dist/index.js"
+  },
   "scripts": {
-    "build": "tsc; vite build --base ./ --target esnext",
-    "dev": "vite --host --port 5500 --base ./",
-    "preview": "vite preview --host --port 5500 --base ./"
+    "build": "tsc",
+    "dev": "tsc -w"
   },
   "devDependencies": {
-    "@types/jsmediatags": "^3.9.3",
-    "typescript": "^5.0.4",
-    "vite": "^4.3.9"
+    "@types/node": "^20.2.5",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "puppeteer": "^20.5.0"
   }
 }
