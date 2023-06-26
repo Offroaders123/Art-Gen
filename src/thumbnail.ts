@@ -50,6 +50,14 @@ export async function generateThumbnail(song: File): Promise<File> {
   return new File([blob],title,{ type: blob.type });
 }
 
+declare global {
+  interface Window {
+    generateThumbnail: typeof generateThumbnail;
+  }
+}
+
+window.generateThumbnail = generateThumbnail;
+
 export interface GenerateVectorOptions {
   artwork?: string;
   title?: string;

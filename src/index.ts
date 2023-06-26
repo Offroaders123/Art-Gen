@@ -21,8 +21,14 @@ export default class ArtGen {
 
   private constructor(private browser: puppeteer.Browser, private page: puppeteer.Page, private server: Server) {}
 
-  async makeThumbnail(): Promise<Buffer> {
-    return this.page.screenshot();
+  async makeThumbnail(song: File): Promise<Buffer> {
+    if (!(song instanceof File)){
+      throw new TypeError("First parameter must be a File object");
+    }
+
+    const file = await this.page.evaluate((songRef) => window.generateThumbnail(songRef),song);
+    const arrayBuffer = await file.arrayBuffer();
+    return Buffer.from(arrayBuffer);
   }
 
   async close(): Promise<void> {
