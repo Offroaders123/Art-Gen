@@ -1,25 +1,36 @@
-const { read } = jsmediatags;
+import { read } from "jsmediatags";
 
 import type { Tags, PictureType } from "jsmediatags/types";
 
-/**
- * Reads the media tags for a given song file.
-*/
-export async function readTags(data: Blob): Promise<Tags> {
-  return new Promise<Tags>((resolve,reject) => {
-    read(data,{
-      onSuccess: ({ tags }) => resolve(tags),
-      onError: reject
-    });
-  });
+type AllTags = Tags & { artwork?: Blob; };
+
+export interface MediaTags {
+  title?: string;
+  artist?: string;
+  album?: string;
+  artwork?: Blob;
 }
 
-/**
- * Reads a Picture tag, and returns an equivalent Blob for that data.
-*/
-export function fromPicture(picture: PictureType): Blob {
+export async function readTags(song: Uint8Array): Promise<MediaTags> {
+  const allTags = await new Promise<AllTags>((onSuccess,onError) => {
+    read(song,{
+      onSuccess: ({ tags }) => {
+        const artwork = (tags.picture !== undefined) ? fromPicture(tags.picture) : undefined;
+        const mediaTags: AllTags = Object.assign(tags,{ artwork });
+        onSuccess(mediaTags)
+      },
+      onError
+    });
+  });
+
+  return toMediaTags(allTags);
+}
+
+function fromPicture(picture: PictureType): Blob {
   const { format: type, data } = picture;
   return new Blob([new Uint8Array(data)],{ type });
 }
 
-export type { Tags, PictureType };
+function toMediaTags({ title, artist, album, artwork }: AllTags): MediaTags {
+  return { title, artist, album, artwork };
+}
