@@ -71,7 +71,7 @@ canvas {
   height: 100%;
   display: block;
   object-fit: contain;
-  opacity: 50%;
-  filter: blur(10px);
+  /* opacity: 50%; */
+  /* filter: blur(10px); */
   z-index: -2;
 }

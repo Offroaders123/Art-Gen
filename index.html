@@ -16,32 +16,10 @@
 
 <body>
 
-<h1>Art Gen</h1>
-
-<section>
-  <h3>Open songs</h3>
-  <input id="songInput" type="file" multiple accept="audio/*, .m4a, .mp3">
-</section>
-
-<section>
-  <h3>Custom Artwork</h3>
-  <textarea id="songNamesEditor" wrap="off" rows="7" placeholder="[
-  {
-    &quot;title&quot;: &lt;string>,
-    &quot;artist&quot;: &lt;string>,
-    &quot;album&quot;: &lt;string>
-  }
-]"></textarea>
-  <input id="artworkInput" type="file" accept="image/*, .png, .jpg, .jpeg">
-</section>
-
-<progress id="progress"></progress>
-
-<div id="grid" data-grid></div>
 <canvas id="canvas" width="1920" height="1080"></canvas>
 
-<script src="https://cdn.jsdelivr.net/npm/jsmediatags@3.9.7/dist/jsmediatags.min.js"></script>
-<script type="module" src="./src/app.ts"></script>
+<script src="./node_modules/jsmediatags/dist/jsmediatags.min.js"></script>
+<script type="module" src="./dist/app.js"></script>
 
 </body>
 

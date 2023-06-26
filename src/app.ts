@@ -5,12 +5,12 @@ import type { Tags, PictureType } from "./jsmediatags.js";
 
 // Test #1
 
-// const audio = await fetch(new URL("../test/26.m4a",import.meta.url))
-//   .then(response => response.blob())
-//   .then(blob => new File([blob],"26.m4a",{ type: blob.type }));
+const audio = await fetch(new URL("../test/26.m4a",import.meta.url))
+  .then(response => response.blob())
+  .then(blob => new File([blob],"26.m4a",{ type: blob.type }));
 
-// const images = await runGenerator(audio,audio,audio,audio);
-// console.log(images);
+const images = await runGenerator(audio)//,audio,audio,audio);
+console.log(images);
 
 // Test #2
 
@@ -72,7 +72,8 @@ import type { Tags, PictureType } from "./jsmediatags.js";
 
 export type SongTags = Tags[];
 
-songInput.addEventListener("change",async function(){
+"songInput";
+(async function(this: HTMLInputElement){
   const files = this.files!;
 
   const thumbnails = await runGenerator(...files);
@@ -81,7 +82,8 @@ songInput.addEventListener("change",async function(){
   this.value = "";
 });
 
-artworkInput.addEventListener("change",async function(){
+"artworkInput";
+(async function(this: HTMLInputElement){
   const [file] = this.files!;
   console.log(file);
 
@@ -120,8 +122,6 @@ async function runGenerator(...songs: (File | Tags)[]): Promise<Blob[]> {
   const thumbnails: Blob[] = [];
 
   document.body.dataset.running = "";
-  progress.value = 0;
-  progress.max = songs.length;
 
   try {
     for (let i = 0; i < songs.length; i++){
@@ -129,7 +129,6 @@ async function runGenerator(...songs: (File | Tags)[]): Promise<Blob[]> {
       const thumbnail = await generateThumbnail(song);
       makeCard(thumbnail);
       thumbnails.push(thumbnail);
-      progress.value = i + 1;
     }
   } catch (error){
     console.error(error);
@@ -140,7 +139,6 @@ async function runGenerator(...songs: (File | Tags)[]): Promise<Blob[]> {
     );
   }
 
-  progress.removeAttribute("value");
   delete document.body.dataset.running;
 
   return thumbnails;
