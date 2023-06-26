@@ -1,68 +1,5 @@
-*, *::before, *::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html {
-  width: 100%;
-  height: 100%;
-}
-
 body {
   margin: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  gap: 1em;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-family: system-ui, sans-serif;
-}
-
-section {
-  display: flex;
-  gap: 0.25em;
-  flex-direction: column;
-}
-
-body[data-running] section {
-  display: none;
-}
-
-textarea {
-  padding: 6px;
-  font-size: 13px;
-  font-family: ui-monospace, monospace;
-  line-height: 1.4;
-}
-
-progress:indeterminate {
-  display: none;
-}
-
-::placeholder {
-  color: inherit;
-  opacity: 0.55;
-  white-space: pre;
-}
-
-div[data-grid] {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fill,minmax(20rem,1fr));
-  grid-template-rows: repeat(auto-fill,minmax(15rem,1fr));
-  z-index: -1;
-}
-
-div[data-grid] img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  cursor: pointer;
 }
 
 canvas {
@@ -71,7 +8,4 @@ canvas {
   height: 100%;
   display: block;
   object-fit: contain;
-  /* opacity: 50%; */
-  /* filter: blur(10px); */
-  z-index: -2;
 }
