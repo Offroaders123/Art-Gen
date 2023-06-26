@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html lang="en-US">
 
 <head>
 
@@ -7,16 +6,68 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
-<link rel="stylesheet" href="./styles/styles.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap">
 
+<style>
+  body {
+    margin: 0;
+  }
+
+  svg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  #main {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: rgb(255 255 255);
+    font-size: 50px;
+    font-family: "Noto Sans", monospace;
+  }
+
+  #title {
+    margin-bottom: 88px;
+    font-size: 70px;
+    font-weight: bold;
+  }
+
+  #artist {
+    margin-bottom: 44px;
+  }
+</style>
+
 </head>
 
 <body>
-  <!--ssr-outlet-->
-  <script type="module" src="./src/client.tsx"></script>
+
+<svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="blur">
+      <feGaussianBlur stdDeviation="30" color-interpolation-filters="sRGB"/>
+      <feComponentTransfer>
+        <feFuncA type="discrete" tableValues="1"/>
+      </feComponentTransfer>
+    </filter>
+  </defs>
+  <image x="0" y="0" width="1920" height="1080" filter="url(#blur)" href="%ARTWORK%" preserveAspectRatio="xMidYMid slice"/>
+  <rect x="0" y="0" width="1920" height="1080" fill="rgb(0 0 0 / 0.7)"/>
+  <image x="135" y="135" width="810" height="810" href="%ARTWORK%"/>
+  <foreignObject x="1058" y="135" width="789" height="810">
+    <div id="main" xmlns="http://www.w3.org/1999/xhtml">
+      <span id="title">%TITLE%</span>
+      <span id="artist">%ARTIST%</span>
+      <span id="album">%ALBUM%</span>
+    </div>
+  </foreignObject>
+</svg>
+
 </body>
 
 </html>

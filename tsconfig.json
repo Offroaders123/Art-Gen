@@ -3,11 +3,8 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "target": "ESNext",
-    "jsx": "react-jsx",
-    "jsxImportSource": "preact",
     "noEmit": true,
     "strict": true,
-    "noImplicitOverride": true,
-    "allowSyntheticDefaultImports": true
+    "noImplicitOverride": true
   }
 }
