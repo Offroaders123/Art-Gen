@@ -3,7 +3,7 @@ import { toDataURLComponent } from "./embed.js";
 /**
  * Loads an image from a specified URL.
 */
-export async function loadImage(src: string, image: HTMLImageElement = new Image()){
+export async function loadImage(src: string, image: HTMLImageElement = new Image()): Promise<HTMLImageElement> {
   await new Promise((resolve,reject) => {
     image.addEventListener("load",resolve,{ once: true });
     image.addEventListener("error",reject,{ once: true });
@@ -15,11 +15,7 @@ export async function loadImage(src: string, image: HTMLImageElement = new Image
 /**
  * Generates an image element from an inline SVG element.
 */
-export async function fromSVG(svg: (HTMLElement & SVGElement) | SVGSVGElement){
-  try {
-    const source = toDataURLComponent(svg.outerHTML,{ type: "image/svg+xml" });
-    return await loadImage(source);
-  } catch (error){
-    throw error;
-  }
+export async function fromSVG(svg: (HTMLElement & SVGElement) | SVGSVGElement): Promise<HTMLImageElement> {
+  const source = toDataURLComponent(svg.outerHTML,"image/svg+xml");
+  return loadImage(source);
 }

@@ -1,11 +1,13 @@
-import { songInput, songNamesEditor, artworkInput, progress, grid } from "./dom.js";
 import { generateThumbnail } from "./thumbnail.js";
+import { loadImage } from "./image.js";
+
 import type { Tags, PictureType } from "./jsmediatags.js";
 
 // Test #1
 
 // const audio = await fetch(new URL("../test/26.m4a",import.meta.url))
-// .then(response => response.blob());
+//   .then(response => response.blob())
+//   .then(blob => new File([blob],"26.m4a",{ type: blob.type }));
 
 // const images = await runGenerator(audio,audio,audio,audio);
 // console.log(images);
@@ -13,13 +15,13 @@ import type { Tags, PictureType } from "./jsmediatags.js";
 // Test #2
 
 // const picture = await fetch(new URL("../test/Artwork.jpg",import.meta.url))
-// .then(response => response.blob())
-// .then(async blob => {
-//   const { type: format } = blob;
-//   const data = await blob.arrayBuffer()
-//   .then(buffer => [...new Uint8Array(buffer)]);
-//   return { format, data } as PictureType;
-// });
+//   .then(response => response.blob())
+//   .then(async blob => {
+//     const { type: format } = blob;
+//     const data = await blob.arrayBuffer()
+//       .then(buffer => [...new Uint8Array(buffer)]);
+//     return { format, data } as PictureType;
+//   });
 
 // const tags = {
 //   title: "zz: the lion stink breatH",
@@ -70,15 +72,13 @@ import type { Tags, PictureType } from "./jsmediatags.js";
 
 export type SongTags = Tags[];
 
-songInput.addEventListener("change",async ({ target }) => {
-  if (!(target instanceof HTMLInputElement)) return;
-
-  const files = target.files!;
+songInput.addEventListener("change",async function(){
+  const files = this.files!;
 
   const thumbnails = await runGenerator(...files);
   console.log(thumbnails);
 
-  target.value = "";
+  this.value = "";
 });
 
 artworkInput.addEventListener("change",async function(){
@@ -88,11 +88,11 @@ artworkInput.addEventListener("change",async function(){
   this.value = "";
 
   const picture = await file.arrayBuffer()
-  .then(buffer => {
-    const { type: format } = file;
-    const data = [...new Uint8Array(buffer)];
-    return { format, data } as PictureType;
-  });
+    .then(buffer => {
+      const { type: format } = file;
+      const data = [...new Uint8Array(buffer)];
+      return { format, data } as PictureType;
+    });
 
   let songTags: SongTags;
 
@@ -116,7 +116,7 @@ artworkInput.addEventListener("change",async function(){
 /**
  * Runs the thumbnail generator over an array of song files, or song artwork and metadata.
 */
-async function runGenerator(...songs: (Blob | Tags)[]){
+async function runGenerator(...songs: (File | Tags)[]): Promise<Blob[]> {
   const thumbnails: Blob[] = [];
 
   document.body.dataset.running = "";
@@ -146,14 +146,12 @@ async function runGenerator(...songs: (Blob | Tags)[]){
   return thumbnails;
 }
 
-async function makeCard(thumbnail: Blob){
-  const image = new Image();
+async function makeCard(thumbnail: File): Promise<void> {
   const link = URL.createObjectURL(thumbnail);
+  const image = await loadImage(link);
 
-  await new Promise((resolve,reject) => {
-    image.addEventListener("load",resolve,{ once: true });
-    image.addEventListener("error",reject,{ once: true });
-    image.src = link;
+  image.addEventListener("click",function(){
+    saveFile(thumbnail);
   });
 
   // Can't right-click and download the thumbnail if the Object URL has already been revoked.
@@ -161,7 +159,7 @@ async function makeCard(thumbnail: Blob){
   grid.append(image);
 }
 
-function saveFile(data: File){
+function saveFile(data: File): void {
   const anchor = document.createElement("a");
   const link = URL.createObjectURL(data);
   anchor.download = link;

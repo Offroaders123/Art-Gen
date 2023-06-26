@@ -1,23 +1,24 @@
-import { canvas, ctx } from "./dom.js";
 import { toDataURLBase64, embedCSSURLs } from "./embed.js";
 import { fromSVG } from "./image.js";
 import { Tags, readTags, fromPicture } from "./jsmediatags.js";
 
+export const ctx = canvas.getContext("2d")!;
+
 export const NotoSans = fetch("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap")
-.then(response => response.text())
-.then(embedCSSURLs)
-.then(media => new Blob([media],{ type: "text/css" }))
-.then(toDataURLBase64);
+  .then(response => response.text())
+  .then(embedCSSURLs)
+  .then(media => new Blob([media],{ type: "text/css" }))
+  .then(toDataURLBase64);
 
 /**
  * Generates a video thumbnail for a given song file, or song artwork and metadata.
 */
-export async function generateThumbnail(song: Blob | Tags){
-  const tags = (song instanceof Blob) ? await readTags(song) : song;
+export async function generateThumbnail(song: File | Tags): Promise<File> {
+  const tags = (song instanceof File) ? await readTags(song) : song;
   console.log(tags);
 
   if (typeof tags.picture === "undefined"){
-    throw new TypeError("Cannot load artwork from song");
+    throw new Error("Could not load artwork from song");
   }
 
   const artwork = fromPicture(tags.picture);
@@ -25,6 +26,16 @@ export async function generateThumbnail(song: Blob | Tags){
 
   const { title, artist, album } = tags;
   console.log(title,artist,album);
+
+  if (title === undefined){
+    throw new Error("Could not load title from song");
+  }
+  if (artist === undefined){
+    throw new Error("Could not load artist from song");
+  }
+  if (album === undefined){
+    throw new Error("Could not load album from song");
+  }
 
   const vector = await generateVector({ artwork: await toDataURLBase64(artwork), title, artist, album });
 
@@ -36,7 +47,7 @@ export async function generateThumbnail(song: Blob | Tags){
     (blob !== null) ? resolve(blob) : reject("Canvas data was null!");
   }));
 
-  return blob;
+  return new File([blob],title,{ type: blob.type });
 }
 
 export interface GenerateVectorOptions {
@@ -46,7 +57,7 @@ export interface GenerateVectorOptions {
   album?: string;
 }
 
-export async function generateVector({ artwork, title, artist, album }: GenerateVectorOptions = { artwork: "", title: "", artist: "", album: "" }){
+export async function generateVector({ artwork, title, artist, album }: GenerateVectorOptions = { artwork: "", title: "", artist: "", album: "" }): Promise<SVGSVGElement> {
   const template = document.createElement("template");
 
   template.innerHTML = `
