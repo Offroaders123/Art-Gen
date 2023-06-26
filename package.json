@@ -7,8 +7,9 @@
     "dev": "tsc -w -p ./tsconfig.build.json"
   },
   "dependencies": {
+    "chrome-launcher": "^0.15.2",
     "jsmediatags": "^3.9.7",
-    "puppeteer": "^20.7.3"
+    "puppeteer-core": "^20.7.3"
   },
   "devDependencies": {
     "@types/jsmediatags": "^3.9.3",

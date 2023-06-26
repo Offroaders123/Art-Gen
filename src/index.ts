@@ -1,4 +1,5 @@
-import * as puppeteer from "puppeteer";
+import * as puppeteer from "puppeteer-core";
+import { getChromePath } from "chrome-launcher";
 import { readFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import { readTags } from "./jsmediatags.js";
@@ -23,8 +24,10 @@ class ArtGen {
       throw new Error("Could not load artwork from song");
     }
 
-    const artworkURL = `data:${artwork.type};base64,${Buffer.from(await artwork.arrayBuffer()).toString("base64")}`;
-    console.log(artworkURL);
+    const artworkBuffer = await artwork.arrayBuffer();
+    const artworkBase64 = Buffer.from(artworkBuffer).toString("base64");
+    const artworkURL = `data:${artwork.type};base64,${artworkBase64}`;
+    // console.log(artworkURL);
   
     const src = index
       .replaceAll("%TITLE%",title)
@@ -40,7 +43,9 @@ class ArtGen {
 
     await new Promise<void>(resolve => server.listen(3000,resolve));
 
-    const browser = await puppeteer.launch({ headless: "new" });
+    const executablePath = getChromePath();
+    console.log(executablePath);
+    const browser = await puppeteer.launch({ headless: "new", executablePath });
 
     return new ArtGen(browser,server);
   }
