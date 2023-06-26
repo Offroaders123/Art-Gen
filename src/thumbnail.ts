@@ -1,6 +1,6 @@
 import { toDataURLBase64, embedCSSURLs } from "./embed.js";
 import { fromSVG } from "./image.js";
-import { Tags, readTags, fromPicture } from "./jsmediatags.js";
+import { readTags, fromPicture } from "./jsmediatags.js";
 
 export const ctx = canvas.getContext("2d")!;
 
@@ -13,8 +13,8 @@ export const NotoSans = fetch("https://fonts.googleapis.com/css2?family=Noto+San
 /**
  * Generates a video thumbnail for a given song file, or song artwork and metadata.
 */
-export async function generateThumbnail(song: File | Tags): Promise<File> {
-  const tags = (song instanceof File) ? await readTags(song) : song;
+export async function generateThumbnail(song: File): Promise<File> {
+  const tags = await readTags(song);
   console.log(tags);
 
   if (typeof tags.picture === "undefined"){
