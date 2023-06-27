@@ -4,9 +4,9 @@ import { generateSource } from "./client.js";
 import type { Server } from "node:http";
 
 export async function startServer(): Promise<Server> {
-  const server = createServer((_request,response) => {
+  const server = createServer(async (_request,response) => {
     response.writeHead(200,{ "Content-Type": "text/html" });
-    response.write(generateSource());
+    response.write(await generateSource());
   });
 
   await new Promise<void>(resolve => server.listen(3000,resolve));
