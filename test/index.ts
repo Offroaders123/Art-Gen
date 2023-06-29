@@ -1,13 +1,12 @@
-import * as fs from "node:fs/promises";
-import { launch } from "../src/index.js";
+import { writeFile } from "node:fs/promises";
+import { createRenderer } from "../src/index.js";
 
-const demo = new URL("./26.m4a",import.meta.url);
-const audio = await fs.readFile(demo);
+const audio = new URL("./26.m4a",import.meta.url).toString();
 
-const artGen = await launch();
+const artGen = await createRenderer();
 console.log(artGen);
 
 const thumbnail = await artGen.generateThumbnail(audio);
 
-await fs.writeFile("./demo.png",thumbnail);
+await writeFile("./demo.png",thumbnail);
 await artGen.close();
