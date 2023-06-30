@@ -39,6 +39,7 @@ async function generateSource(tags: MediaTags): Promise<string> {
   const index = new URL("../index.html",import.meta.url);
   const source = await readFile(index,{ encoding: "utf-8" });
   const { title, artist, album, artwork } = tags;
+  console.log(`${title}: ${artist} - ${album}`);
   return source
     .replaceAll("%TITLE%",title)
     .replaceAll("%ARTIST%",artist)
