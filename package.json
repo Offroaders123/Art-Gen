@@ -2,6 +2,7 @@
   "name": "art-gen",
   "private": true,
   "type": "module",
+  "bin": "./src/cli.ts",
   "scripts": {
     "build": "tsc -p ./tsconfig.build.json",
     "dev": "tsc -w -p ./tsconfig.build.json"

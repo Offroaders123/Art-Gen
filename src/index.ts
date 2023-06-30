@@ -2,6 +2,7 @@ import { createServer } from "node:http";
 import { launch } from "puppeteer-core";
 import { getChromePath } from "chrome-launcher";
 import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
 import { readTags } from "./jsmediatags.js";
 
 import type { Server } from "node:http";
@@ -21,7 +22,7 @@ async function startServer(): Promise<Server> {
     const url = new URL(`${SERVER_PATH}${request.url}`);
     console.log(url.toString());
     if (url.searchParams.size === 0) return new Promise(resolve => response.end(resolve));
-    const songPath = decodeURIComponent(new URL(decodeURIComponent(url.searchParams.get("songPath")!)).pathname);
+    const songPath = decodeURIComponent(url.searchParams.get("songPath")!);
     console.log(songPath);
     const song = await readFile(songPath);
     const tags = await readTags(song);
@@ -62,7 +63,7 @@ class ArtGen {
   async generateThumbnail(songPath: string): Promise<Buffer> {
     const page = await this.#browser.newPage();
     const thumbnailPath = new URL(SERVER_PATH);
-    thumbnailPath.searchParams.set("songPath",encodeURIComponent(songPath));
+    thumbnailPath.searchParams.set("songPath",encodeURIComponent(resolve(songPath)));
 
     await page.goto(thumbnailPath.toString(),{ waitUntil: "networkidle0" });
     await page.setViewport({ width: 1920, height: 1080 });
