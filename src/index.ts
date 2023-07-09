@@ -20,10 +20,10 @@ export async function createRenderer(): Promise<ArtGen> {
 async function startServer(): Promise<Server> {
   const server = createServer(async (request,response) => {
     const url = new URL(`${SERVER_PATH}${request.url}`);
-    console.log(url.toString());
+    // console.log(url.toString());
     if (url.searchParams.size === 0) return new Promise(resolve => response.end(resolve));
     const songPath = decodeURIComponent(url.searchParams.get("songPath")!);
-    console.log(songPath);
+    console.log(`\n${songPath}`);
     const song = await readFile(songPath);
     const tags = await readTags(song);
     const source = await generateSource(tags);
