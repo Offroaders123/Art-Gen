@@ -5,4 +5,6 @@ Thumbs.db
 
 /node_modules
 /dist
-demo.png
+
+/test/26.png
+/test/26.mp4

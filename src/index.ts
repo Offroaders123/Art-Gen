@@ -40,6 +40,7 @@ async function generateSource(tags: MediaTags): Promise<string> {
   const source = await readFile(index,{ encoding: "utf-8" });
   const { title, artist, album, artwork } = tags;
   console.log(`${title}: ${artist} - ${album}`);
+  console.log("Generating thumbnail...");
   return source
     .replaceAll("%TITLE%",title)
     .replaceAll("%ARTIST%",artist)
