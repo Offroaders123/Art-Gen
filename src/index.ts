@@ -1,9 +1,10 @@
 #!/usr/bin/env npx tsx
 
-import arg from "arg";
-import { writeFile, rm } from "node:fs/promises";
+import { writeFile } from "node:fs/promises";
+import { extname } from "node:path";
 import { exec as execCallback } from "node:child_process";
 import { promisify } from "node:util";
+import { inputs, artworkOnly } from "./args.js";
 import { createRenderer } from "./thumbnail.js";
 
 const exec = promisify(execCallback);
@@ -11,30 +12,9 @@ const exec = promisify(execCallback);
 console.log("Art Gen");
 console.log("-- An app to generate thumbnails for YouTube Art Tracks! --\n");
 
-const args = arg({
-  "--input": [String],
-  "-i": "--input",
-  "--output": [String],
-  "-o": "--output",
-  "--artwork-only": Boolean,
-  "-a": "--artwork-only"
-});
-// console.log(args);
-
-const inputs = args["--input"];
-if (inputs === undefined){
-  throw new TypeError("Must provide song file path inputs");
-}
-// console.log(inputs);
-
-const outputs = args["--output"];
-if (outputs === undefined){
-  throw new TypeError("Must provide thumbnail file outputs");
-}
-// console.log(outputs);
-
-const artworkOnly = args["--artwork-only"] ?? false;
 if (artworkOnly) console.log("[artwork only]");
+
+const outputs = inputs.map(item => extRename(item,artworkOnly ? ".png" : ".mp4"));
 
 for (let i = 0; i < inputs.length; i++){
   const songPath = inputs[i];
@@ -50,7 +30,7 @@ const renderer = await createRenderer();
 
 for (let i = 0; i < inputs.length; i++){
   const songPath = inputs[i];
-  const thumbnailPath = artworkOnly ? outputs[i] : `${outputs[i]}__.png`;
+  const thumbnailPath = artworkOnly ? outputs[i] : extRename(outputs[i],".png");
   const thumbnail = await renderer.generateThumbnail(songPath);
   // console.log(thumbnail);
   await writeFile(thumbnailPath,thumbnail);
@@ -62,7 +42,7 @@ if (artworkOnly) process.exit(0);
 
 for (let i = 0; i < inputs.length; i++){
   const songPath = inputs[i];
-  const thumbnailPath = `${outputs[i]}__.png`;
+  const thumbnailPath = extRename(outputs[i],".png");
   const videoPath = outputs[i];
   console.log("Generating video...");
   // console.log(songPath);
@@ -82,5 +62,9 @@ for (let i = 0; i < inputs.length; i++){
     -c:a aac \
     -shortest \
     "${videoPath}" -y`);
-  await rm(thumbnailPath);
+}
+
+function extRename(path: string, ext: string): string {
+  const extension = extname(path);
+  return path.replace(extension,ext);
 }
