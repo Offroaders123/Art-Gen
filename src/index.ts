@@ -4,7 +4,7 @@ import { writeFile } from "node:fs/promises";
 import { extname } from "node:path";
 import { exec as execCallback } from "node:child_process";
 import { promisify } from "node:util";
-import { inputs, artworkOnly } from "./args.js";
+import { inputs, artworkOnly, overwrite } from "./args.js";
 import { createRenderer } from "./thumbnail.js";
 
 const exec = promisify(execCallback);
@@ -33,6 +33,7 @@ for (let i = 0; i < inputs.length; i++){
   const thumbnailPath = artworkOnly ? outputs[i] : extRename(outputs[i],".png");
   const thumbnail = await renderer.generateThumbnail(songPath);
   // console.log(thumbnail);
+  // need to implement 'overwrite'
   await writeFile(thumbnailPath,thumbnail);
 }
 
@@ -61,7 +62,8 @@ for (let i = 0; i < inputs.length; i++){
     -vf "scale=out_color_matrix=bt709,fps=10,format=yuv420p" \
     -c:a aac \
     -shortest \
-    "${videoPath}" -y`);
+    "${videoPath}"\
+    ${overwrite ? "-y" : "-n"}`);
 }
 
 function extRename(path: string, ext: string): string {
