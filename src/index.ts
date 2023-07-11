@@ -13,6 +13,7 @@ console.log("Art Gen");
 console.log("-- An app to generate thumbnails for YouTube Art Tracks! --\n");
 
 if (artworkOnly) console.log("[artwork only]");
+if (overwrite) console.log("[overwrite]");
 
 const outputs = inputs.map(item => extRename(item,artworkOnly ? ".png" : ".mp4"));
 
@@ -33,8 +34,7 @@ for (let i = 0; i < inputs.length; i++){
   const thumbnailPath = artworkOnly ? outputs[i] : extRename(outputs[i],".png");
   const thumbnail = await renderer.generateThumbnail(songPath);
   // console.log(thumbnail);
-  // need to implement 'overwrite'
-  await writeFile(thumbnailPath,thumbnail);
+  await writeFile(thumbnailPath,thumbnail,{ flag: overwrite ? undefined : "wx" });
 }
 
 await renderer.close();

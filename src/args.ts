@@ -1,5 +1,3 @@
-import { access } from "node:fs/promises";
-
 const COMMAND_PATTERN = /^--|-/;
 const ARTWORK_ONLY_PATTERN = /^--artwork-only|-a$/;
 const OVERWRITE_PATTERN = /^-y|-n$/;
@@ -20,7 +18,6 @@ for (const item of args){
       throw new Error(`Unexpected command '${item}'`);
     }
     default: {
-      await access(item);
       inputs.push(item);
     }
   }
