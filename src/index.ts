@@ -17,24 +17,12 @@ if (overwrite) console.log("[overwrite]");
 
 const outputs = inputs.map(item => extRename(item,artworkOnly ? ".png" : ".mp4"));
 
-for (let i = 0; i < inputs.length; i++){
-  const songPath = inputs[i];
-  const thumbnailPath = outputs[i];
-  if (thumbnailPath === undefined){
-    console.log(songPath,"--X--");
-    throw new TypeError("Please provide an output path for every input path");
-  }
-  console.log(songPath,thumbnailPath);
-}
-
 const renderer = await createRenderer();
 
 for (let i = 0; i < inputs.length; i++){
   const songPath = inputs[i];
   const thumbnailPath = artworkOnly ? outputs[i] : extRename(outputs[i],".png");
-  const thumbnail = await renderer.generateThumbnail(songPath);
-  // console.log(thumbnail);
-  await writeFile(thumbnailPath,thumbnail,{ flag: overwrite ? undefined : "wx" });
+  await renderer.generateThumbnail(songPath,thumbnailPath);
 }
 
 await renderer.close();

@@ -1,8 +1,9 @@
 import { createServer } from "node:http";
 import { launch } from "puppeteer-core";
 import { getChromePath } from "chrome-launcher";
-import { readFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { overwrite } from "./args.js";
 import { readTags } from "./jsmediatags.js";
 
 import type { Server } from "node:http";
@@ -62,15 +63,17 @@ class ThumbnailGenerator {
     this.#browser = browser;
   }
 
-  async generateThumbnail(songPath: string): Promise<Buffer> {
+  async generateThumbnail(songPath: string, thumbnailPath: string): Promise<void> {
     const page = await this.#browser.newPage();
-    const thumbnailPath = new URL(SERVER_PATH);
-    thumbnailPath.searchParams.set("songPath",encodeURIComponent(resolve(songPath)));
+    const renderPath = new URL(SERVER_PATH);
+    renderPath.searchParams.set("songPath",encodeURIComponent(resolve(songPath)));
 
-    await page.goto(thumbnailPath.toString(),{ waitUntil: "networkidle0" });
+    await page.goto(renderPath.toString(),{ waitUntil: "networkidle0" });
     await page.setViewport({ width: 1920, height: 1080 });
 
-    return page.screenshot();
+    const thumbnail = await page.screenshot();
+    // console.log(thumbnail);
+    await writeFile(thumbnailPath,thumbnail,{ flag: overwrite ? undefined : "wx" });
   }
 
   async close(): Promise<void> {
