@@ -11,10 +11,10 @@ import type { MediaTags } from "./jsmediatags.js";
 
 const SERVER_PATH = "http://localhost:3000";
 
-export async function createRenderer(): Promise<ArtGen> {
+export async function createRenderer(): Promise<ThumbnailGenerator> {
   const server = await startServer();
   const browser = await launchBrowser();
-  return new ArtGen(server,browser);
+  return new ThumbnailGenerator(server,browser);
 }
 
 async function startServer(): Promise<Server> {
@@ -53,7 +53,7 @@ async function launchBrowser(): Promise<Browser> {
   return launch({ headless: "new", executablePath });
 }
 
-class ArtGen {
+class ThumbnailGenerator {
   #server: Server;
   #browser: Browser;
 

@@ -4,7 +4,7 @@ import arg from "arg";
 import { writeFile, rm } from "node:fs/promises";
 import { exec as execCallback } from "node:child_process";
 import { promisify } from "node:util";
-import { createRenderer } from "./index.js";
+import { createRenderer } from "./thumbnail.js";
 
 const exec = promisify(execCallback);
 
