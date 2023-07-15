@@ -1,6 +1,6 @@
 const COMMAND_PATTERN = /^--|-/;
 const ARTWORK_ONLY_PATTERN = /^--artwork-only|-a$/;
-const OVERWRITE_PATTERN = /^-y|-n$/;
+const OVERWRITE_PATTERN = /^--overwrite|-w$/;
 
 const args = process.argv.slice(2);
 const commands: string[] = [];
@@ -28,4 +28,4 @@ if (inputs.length === 0){
 }
 
 export const artworkOnly: boolean = commands.some(item => ARTWORK_ONLY_PATTERN.test(item));
-export const overwrite: boolean = (commands.find((item): item is "-y" | "-n" => OVERWRITE_PATTERN.test(item)) ?? "-n") === "-y";
+export const overwrite: boolean = commands.some(item => OVERWRITE_PATTERN.test(item));

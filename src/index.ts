@@ -1,6 +1,5 @@
 #!/usr/bin/env npx tsx
 
-import { writeFile } from "node:fs/promises";
 import { extname } from "node:path";
 import { exec as execCallback } from "node:child_process";
 import { promisify } from "node:util";
