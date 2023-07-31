@@ -14,7 +14,7 @@ const exec = promisify(execCallback);
 
 export const Logger = newLogger(defaultLoggerOpts());
 
-Logger.log(chalk.bold.bold("Art Gen"));
+Logger.log(chalk.bold("Art Gen"));
 Logger.log("-- An app to generate thumbnails for YouTube Art Tracks! --\n");
 
 if (artworkOnly) Logger.debug("[artwork only]");
