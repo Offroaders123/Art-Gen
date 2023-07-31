@@ -50,7 +50,7 @@ var cycleFolders = async function (i: number = 0) {
   try {
     var recurs = async (dir: string = inputs[i], splice: boolean = true) => {
       if (statSync(dir).isDirectory()) {
-        Logger.info(`${splice ? "F" : "Subf"}older detected ${dir}`);
+        Logger.debug(`${splice ? "F" : "Subf"}older detected ${dir}`);
         loadedFolders[dir] = [];
         if (splice) inputs.splice(i, 1);
         var rdir = readdirSync(dir, { recursive });
