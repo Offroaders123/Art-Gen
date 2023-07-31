@@ -9,7 +9,8 @@ import { readTags } from "./jsmediatags.js";
 import type { Server } from "node:http";
 import type { Browser } from "puppeteer-core";
 import type { MediaTags } from "./jsmediatags.js";
-import { Logger } from "./index.js";
+import { Logger, prompt, term } from "./index.js";
+import { existsSync } from "node:fs";
 
 const SERVER_PATH = "http://localhost:3000";
 
@@ -25,7 +26,7 @@ async function startServer(): Promise<Server> {
     Logger.debug(url.toString());
     if (url.searchParams.size === 0) return new Promise(resolve => response.end(resolve));
     const songPath = decodeURIComponent(url.searchParams.get("songPath")!);
-    Logger.debug(`\n${songPath}\n`);
+    Logger.debug(`${songPath}\n`);
     const song = await readFile(songPath);
     const tags = await readTags(song);
     const source = await generateSource(tags);
@@ -64,17 +65,47 @@ class ThumbnailGenerator {
     this.#browser = browser;
   }
 
-  async generateThumbnail(songPath: string, thumbnailPath: string): Promise<void> {
-    const page = await this.#browser.newPage();
-    const renderPath = new URL(SERVER_PATH);
-    renderPath.searchParams.set("songPath", encodeURIComponent(resolve(songPath)));
+  async generateThumbnail(songPath: string, thumbnailPath: string): Promise<boolean> {
+    var overwrite: boolean = false;
+    if (existsSync(thumbnailPath) || existsSync(songPath)) {
+      overwrite = await (async () => {
+        return new Promise(async (r) => {
+          var response = null;
+          while (response == null) {
+            var t = await prompt("Video file already exists! Would you like to overwrite? (Y/N): ");
+            if (t.toUpperCase() == "Y" || t.toUpperCase() == "N") {
+              response = t;
+            } else {
+              Logger.warning('Invalid response! Answer with "Y" or "N"!\n');
+            }
+          }
+          Logger.lineBreak();
+          Logger.debug(`${response}`);
+          r(response == "Y");
+        });
+      })();
+    } else {
+      overwrite = true;
+    }
+    return new Promise(async (_resolve) => {
+      const page = await this.#browser.newPage();
+      const renderPath = new URL(SERVER_PATH);
+      renderPath.searchParams.set("songPath", encodeURIComponent(resolve(songPath)));
 
-    await page.goto(renderPath.toString(), { waitUntil: "networkidle0" });
-    await page.setViewport({ width: 1920, height: 1080 });
+      await page.goto(renderPath.toString(), { waitUntil: "networkidle0" });
+      await page.setViewport({ width: 1920, height: 1080 });
 
-    const thumbnail = await page.screenshot();
-    Logger.debug(thumbnail);
-    await writeFile(thumbnailPath, thumbnail, { flag: overwrite ? undefined : "wx" });
+      const thumbnail = await page.screenshot();
+      Logger.debug(thumbnail);
+
+      if (!overwrite) {
+        term();
+        _resolve(overwrite);
+      } else {
+        await writeFile(thumbnailPath, thumbnail);
+        _resolve(overwrite);
+      }
+    });
   }
 
   async close(): Promise<void> {

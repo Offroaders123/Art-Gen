@@ -12,7 +12,8 @@
     "chrome-launcher": "^0.15.2",
     "colors": "^1.4.0",
     "jsmediatags": "^3.9.7",
-    "puppeteer-core": "^20.8.2"
+    "puppeteer-core": "^20.8.2",
+    "string-width": "^6.1.0"
   },
   "devDependencies": {
     "@types/jsmediatags": "^3.9.3",

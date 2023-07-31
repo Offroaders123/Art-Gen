@@ -4,48 +4,53 @@ import { createInterface } from "node:readline";
 import { extname } from "node:path";
 import { exec as execCallback } from "node:child_process";
 import { promisify } from "node:util";
-import { inputs, artworkOnly, overwrite } from "./args.js";
+import { inputs, artworkOnly, overwrite as _overwrite } from "./args.js";
 import { createRenderer } from "./thumbnail.js";
-import { rmSync } from "node:fs";
+import { rm, rmSync } from "node:fs";
 import { defaultLoggerOpts, newLogger } from "./logger.js";
+import chalk from "chalk";
 
 const exec = promisify(execCallback);
 
 export const Logger = newLogger(defaultLoggerOpts());
 
-Logger.log("Art Gen");
+Logger.log(chalk.bold.bold("Art Gen"));
 Logger.log("-- An app to generate thumbnails for YouTube Art Tracks! --\n");
 
 if (artworkOnly) Logger.debug("[artwork only]");
-if (overwrite) Logger.debug("[overwrite]");
+if (_overwrite) Logger.debug("[overwrite]");
 
 const outputs = inputs.map(item => extRename(item, artworkOnly ? ".png" : ".mp4"));
 
 const renderer = await createRenderer();
 
+var overwrite_: boolean = false;
 for (let i = 0; i < inputs.length; i++) {
   const songPath = inputs[i];
   const thumbnailPath = artworkOnly ? outputs[i] : extRename(outputs[i], ".png");
-  await renderer.generateThumbnail(songPath, thumbnailPath);
+  overwrite_ = await renderer.generateThumbnail(songPath, thumbnailPath);
 }
+const overwrite = _overwrite || overwrite_;
 
 await renderer.close();
 
-if (artworkOnly) process.exit(0);
+if (artworkOnly) end();
 
+
+Logger.debugLineBreak();
 const tempArtwork = await (async () => {
   return new Promise(async (r) => {
     var response = null;
     while (response == null) {
-      var t = await prompt("Delete artwork after video is generated? (Y|N): ");
+      var t = await prompt("Delete artwork after video is generated? (Y/N): ");
       if (t.toUpperCase() == "Y" || t.toUpperCase() == "N") {
         response = t;
       } else {
         Logger.warning('Invalid response! Answer with "Y" or "N"!\n');
       }
     }
+    Logger.lineBreak();
     Logger.debug(`${response}`);
-    console.log("");
     r(response == "Y");
   });
 })();
@@ -75,22 +80,20 @@ for (let i = 0; i < inputs.length; i++) {
     -shortest \
     "${videoPath}"\
     ${overwrite ? "-y" : "-n"}`);
-
   if (tempArtwork) {
+    Logger.debug("Removing " + thumbnailPath);
     rmSync(thumbnailPath);
   }
 }
 
-Logger.log("Done!");
-Logger.critical("Exiting process...");
-process.exit(0);
+end();
 
 function extRename(path: string, ext: string): string {
   const extension = extname(path);
   return path.replace(extension, ext);
 }
 
-async function prompt(prompt: string): Promise<string> {
+export async function prompt(prompt: string): Promise<string> {
   const rl = createInterface({
     input: process.stdin,
     output: process.stdout
@@ -100,4 +103,14 @@ async function prompt(prompt: string): Promise<string> {
     rl.close();
     resolve(ans);
   }));
+}
+
+export function term() {
+  Logger.critical("Ending process...");
+  process.exit(0);
+}
+export function end() {
+  Logger.log("Done!");
+  Logger.critical("Exiting process...");
+  process.exit(0);
 }
