@@ -28,7 +28,7 @@ var overwrite_: boolean = false;
 for (let i = 0; i < inputs.length; i++) {
   const songPath = inputs[i];
   const thumbnailPath = artworkOnly ? outputs[i] : extRename(outputs[i], ".png");
-  overwrite_ = await renderer.generateThumbnail(songPath, thumbnailPath);
+  overwrite_ = await renderer.generateThumbnail(songPath, thumbnailPath, _overwrite);
 }
 const overwrite = _overwrite || overwrite_;
 
