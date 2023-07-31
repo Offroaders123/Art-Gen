@@ -4,7 +4,7 @@ import { createInterface } from "node:readline";
 import { extname } from "node:path";
 import { exec as execCallback } from "node:child_process";
 import { promisify } from "node:util";
-import { inputs, artworkOnly, overwrite as _overwrite } from "./args.js";
+import { inputs, artworkOnly, overwrite as _overwrite, debugMode } from "./args.js";
 import { createRenderer } from "./thumbnail.js";
 import { rm, rmSync } from "node:fs";
 import { defaultLoggerOpts, newLogger } from "./logger.js";
@@ -12,7 +12,7 @@ import chalk from "chalk";
 
 const exec = promisify(execCallback);
 
-export const Logger = newLogger(defaultLoggerOpts());
+export const Logger = newLogger(defaultLoggerOpts(debugMode));
 
 Logger.log(chalk.bold("Art Gen"));
 Logger.log("-- An app to generate thumbnails for YouTube Art Tracks! --\n");
