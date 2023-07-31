@@ -9,7 +9,7 @@ import { readTags } from "./jsmediatags.js";
 import type { Server } from "node:http";
 import type { Browser } from "puppeteer-core";
 import type { MediaTags } from "./jsmediatags.js";
-import { Logger, allow, prompt, term } from "./index.js";
+import { Logger, allow, prompt, queueFinish, term } from "./index.js";
 import { existsSync } from "node:fs";
 
 const SERVER_PATH = "http://localhost:3000";
@@ -26,10 +26,11 @@ async function startServer(): Promise<Server> {
     Logger.debug(url.toString());
     if (url.searchParams.size === 0) return new Promise(resolve => response.end(resolve));
     const songPath = decodeURIComponent(url.searchParams.get("songPath")!);
+    const threaded = decodeURIComponent(url.searchParams.get("threaded")!) == "true";
     Logger.debug(`${songPath}\n`);
     const song = await readFile(songPath);
     const tags = await readTags(song);
-    const source = await generateSource(tags);
+    const source = await generateSource(tags, threaded);
     response.writeHead(200, { "Content-Type": "text/html" });
     response.write(source);
     await new Promise(resolve => response.end(resolve));
@@ -38,11 +39,11 @@ async function startServer(): Promise<Server> {
   return server;
 }
 
-async function generateSource(tags: MediaTags): Promise<string> {
+async function generateSource(tags: MediaTags, threaded: boolean): Promise<string> {
   const index = new URL("../index.html", import.meta.url);
   const source = await readFile(index, { encoding: "utf-8" });
   const { title, artist, album, artwork } = tags;
-  Logger.log("Generating thumbnail...\n");
+  if (!threaded) Logger.log(`${threaded ? title + " | " : ""}Generating thumbnail...\n`);
   return source
     .replaceAll("%TITLE%", title)
     .replaceAll("%ARTIST%", artist)
@@ -64,11 +65,13 @@ class ThumbnailGenerator {
     this.#browser = browser;
   }
 
-  async generateThumbnail(songPath: string, thumbnailPath: string, overwrite: boolean): Promise<boolean> {
+  async generateThumbnail(songPath: string, thumbnailPath: string, overwrite: boolean, threaded: boolean): Promise<boolean> {
+    Logger.debug(songPath);
     return new Promise(async (_resolve) => {
       const page = await this.#browser.newPage();
       const renderPath = new URL(SERVER_PATH);
       renderPath.searchParams.set("songPath", encodeURIComponent(resolve(songPath)));
+      renderPath.searchParams.set("threaded", encodeURIComponent(threaded));
 
       await page.goto(renderPath.toString(), { waitUntil: "networkidle0" });
       await page.setViewport({ width: 1920, height: 1080 });
@@ -78,6 +81,7 @@ class ThumbnailGenerator {
 
       await writeFile(thumbnailPath, thumbnail);
       allow(songPath);
+      queueFinish(songPath);
       _resolve(overwrite);
     });
   }
