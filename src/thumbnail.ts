@@ -52,7 +52,7 @@ async function generateSource(tags: MediaTags): Promise<string> {
 
 async function launchBrowser(): Promise<Browser> {
   const executablePath = getChromePath();
-  return launch({ headless: "new", executablePath });
+  return launch({ headless: true, executablePath });
 }
 
 class ThumbnailGenerator {
@@ -64,35 +64,8 @@ class ThumbnailGenerator {
     this.#browser = browser;
   }
 
-  async generateThumbnail(songPath: string, thumbnailPath: string, _overwrite: boolean, artworkOnly: boolean): Promise<boolean> {
-    var overwrite: boolean = false;
-    if ((existsSync(thumbnailPath) || (existsSync(songPath) && !artworkOnly)) && !_overwrite) {
-      overwrite = await (async () => {
-        return new Promise(async (r) => {
-          var response = null;
-          var _prompt_ = async () => {
-            var t = await prompt("File already exists! Would you like to overwrite? (Y/N): ");
-            if (t.toUpperCase() == "Y" || t.toUpperCase() == "N") {
-              response = t;
-              if (t.toUpperCase() == "N") Logger.lineBreak();
-            } else {
-              Logger.warning('Invalid response! Answer with "Y" or "N"!\n');
-              await _prompt_();
-            }
-          }
-          await _prompt_();
-          Logger.debug(`${response}`);
-          r(response == "Y");
-        });
-      })();
-    } else {
-      overwrite = true;
-    }
+  async generateThumbnail(songPath: string, thumbnailPath: string, overwrite: boolean): Promise<boolean> {
     return new Promise(async (_resolve) => {
-      if (!overwrite) {
-        term(songPath);
-        return _resolve(overwrite);
-      }
       const page = await this.#browser.newPage();
       const renderPath = new URL(SERVER_PATH);
       renderPath.searchParams.set("songPath", encodeURIComponent(resolve(songPath)));

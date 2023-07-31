@@ -6,7 +6,7 @@ import { exec as execCallback } from "node:child_process";
 import { promisify } from "node:util";
 import { inputs, artworkOnly, overwrite, debugMode } from "./args.js";
 import { createRenderer } from "./thumbnail.js";
-import { rmSync } from "node:fs";
+import { existsSync, rmSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { defaultLoggerOpts, newLogger } from "./logger.js";
 import chalk from "chalk";
@@ -29,15 +29,45 @@ const outputs = inputs.map(item => extRename(item, artworkOnly ? ".png" : ".mp4"
 
 const renderer = await createRenderer();
 
-for (let i = 0; i < inputs.length; i++) {
+var cycleSongs = async function (i: number = 0) {
   const songPath = inputs[i];
   const thumbnailPath = artworkOnly ? outputs[i] : extRename(outputs[i], ".png");
   const song = await readFile(songPath);
   const tags = await readTags(song);
   const { title, artist, album } = tags;
   Logger.log(`${title}: ${artist} - ${album}`);
-  await renderer.generateThumbnail(songPath, thumbnailPath, overwrite, artworkOnly);
+  var _overwrite: boolean = false;
+  if ((existsSync(thumbnailPath) || (existsSync(songPath) && !artworkOnly)) && !overwrite) {
+    _overwrite = await (async () => {
+      return new Promise(async (r) => {
+        var response = null;
+        var _prompt_ = async () => {
+          var t = await prompt("File already exists! Would you like to overwrite? (Y/N): ");
+          if (t.toUpperCase() == "Y" || t.toUpperCase() == "N") {
+            response = t.toUpperCase();
+            if (t.toUpperCase() == "N") {
+              Logger.log("Skipping file...");
+              Logger.lineBreak();
+              term(songPath);
+            }
+          } else {
+            Logger.warning('Invalid response! Answer with "Y" or "N"!\n');
+            await _prompt_();
+          }
+        }
+        await _prompt_();
+        Logger.debug(`${response}`);
+        r(response == "Y");
+      });
+    })();
+  } else {
+    _overwrite = true;
+  }
+  if (_overwrite || overwrite) await renderer.generateThumbnail(songPath, thumbnailPath, overwrite || _overwrite);
+  if (!!inputs[i + 1]) await cycleSongs(i + 1);
 }
+await cycleSongs();
+
 
 await renderer.close();
 
@@ -112,8 +142,8 @@ export async function prompt(prompt: string): Promise<string> {
     output: process.stdout
   });
 
-  return new Promise(resolve => rl.question(prompt, ans => {
-    rl.close();
+  return new Promise(resolve => rl.question(chalk.greenBright(prompt), ans => {
+    setTimeout(() => rl.close(), 10); //prevent rl hanging lines & freezing (Windows)
     resolve(ans);
   }));
 }
