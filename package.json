@@ -1,5 +1,5 @@
 {
-  "name": "artgen",
+  "name": "art-gen",
   "private": true,
   "type": "module",
   "bin": "./src/index.ts",
