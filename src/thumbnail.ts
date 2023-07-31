@@ -65,9 +65,9 @@ class ThumbnailGenerator {
     this.#browser = browser;
   }
 
-  async generateThumbnail(songPath: string, thumbnailPath: string, _overwrite: boolean): Promise<boolean> {
+  async generateThumbnail(songPath: string, thumbnailPath: string, _overwrite: boolean, artworkOnly: boolean): Promise<boolean> {
     var overwrite: boolean = false;
-    if ((existsSync(thumbnailPath) || existsSync(songPath)) && !_overwrite) {
+    if ((existsSync(thumbnailPath) || (existsSync(songPath) && !artworkOnly)) && !_overwrite) {
       overwrite = await (async () => {
         return new Promise(async (r) => {
           var response = null;
