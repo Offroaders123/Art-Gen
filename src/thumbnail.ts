@@ -71,14 +71,16 @@ class ThumbnailGenerator {
       overwrite = await (async () => {
         return new Promise(async (r) => {
           var response = null;
-          while (response == null) {
+          var _prompt_ = async () => {
             var t = await prompt("Video file already exists! Would you like to overwrite? (Y/N): ");
             if (t.toUpperCase() == "Y" || t.toUpperCase() == "N") {
               response = t;
             } else {
               Logger.warning('Invalid response! Answer with "Y" or "N"!\n');
+              await _prompt_();
             }
           }
+          await _prompt_();
           Logger.lineBreak();
           Logger.debug(`${response}`);
           r(response == "Y");
