@@ -72,7 +72,7 @@ var cycleFolders = async function (i: number = 0) {
 await cycleFolders();
 
 for (const key in loadedFolders) {
-  Logger.info(`Found: ${loadedFolders[key].join(", ")} in ${key}`);
+  if (loadedFolders[key].length > 0) Logger.info(`Found: ${loadedFolders[key].join(", ")} in ${key}`);
 }
 
 Logger.debug(inputs);
