@@ -57,23 +57,38 @@ class Logger {
 		return this.debugLevel > 0;
 	}
 
-	public log(message: any) {
-		this.info(message);
+	public log(...messages: any) {
+		this.info(...messages);
 	}
-	public info(message: any) {
-		console.log(this.formatMessage(message, 0));
+	public info(...messages: any) {
+		for (var i in messages) {
+			var message = messages[i];
+			console.log(this.formatMessage(message, 0));
+		}
 	}
-	public debug(message: any) {
-		if (this.debugEnabled()) console.log(this.formatMessage(message, 1));
+	public debug(...messages: any) {
+		for (var i in messages) {
+			var message = messages[i];
+			if (this.debugEnabled()) console.log(this.formatMessage(message, 1));
+		}
 	}
-	public warning(message: any) {
-		console.log(this.formatMessage(message, 2));
+	public warning(...messages: any) {
+		for (var i in messages) {
+			var message = messages[i];
+			console.log(this.formatMessage(message, 2));
+		}
 	}
-	public error(message: any) {
-		console.log(this.formatMessage(message, 3));
+	public error(...messages: any) {
+		for (var i in messages) {
+			var message = messages[i];
+			console.log(this.formatMessage(message, 3));
+		}
 	}
-	public critical(message: any) {
-		console.log(this.formatMessage(message, 4));
+	public critical(...messages: any) {
+		for (var i in messages) {
+			var message = messages[i];
+			console.log(this.formatMessage(message, 4));
+		}
 	}
 
 	public debugLineBreak(count: number = 1) {

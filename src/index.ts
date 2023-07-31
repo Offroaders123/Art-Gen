@@ -1,36 +1,43 @@
 #!/usr/bin/env npx tsx
 
 import { createInterface } from "node:readline";
-import { extname } from "node:path";
+import { extname, basename } from "node:path";
 import { exec as execCallback } from "node:child_process";
 import { promisify } from "node:util";
-import { inputs, artworkOnly, overwrite as _overwrite, debugMode } from "./args.js";
+import { inputs, artworkOnly, overwrite, debugMode } from "./args.js";
 import { createRenderer } from "./thumbnail.js";
-import { rm, rmSync } from "node:fs";
+import { rmSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import { defaultLoggerOpts, newLogger } from "./logger.js";
 import chalk from "chalk";
+import { readTags } from "./jsmediatags.js";
 
 const exec = promisify(execCallback);
 
 export const Logger = newLogger(defaultLoggerOpts(debugMode));
 
+const termed: string[] = [];
+const allowed: string[] = [];
+
 Logger.log(chalk.bold("Art Gen"));
 Logger.log("-- An app to generate thumbnails for YouTube Art Tracks! --\n");
 
 if (artworkOnly) Logger.debug("[artwork only]");
-if (_overwrite) Logger.debug("[overwrite]");
+if (overwrite) Logger.debug("[overwrite]");
 
 const outputs = inputs.map(item => extRename(item, artworkOnly ? ".png" : ".mp4"));
 
 const renderer = await createRenderer();
 
-var overwrite_: boolean = false;
 for (let i = 0; i < inputs.length; i++) {
   const songPath = inputs[i];
   const thumbnailPath = artworkOnly ? outputs[i] : extRename(outputs[i], ".png");
-  overwrite_ = await renderer.generateThumbnail(songPath, thumbnailPath, _overwrite, artworkOnly);
+  const song = await readFile(songPath);
+  const tags = await readTags(song);
+  const { title, artist, album } = tags;
+  Logger.log(`${title}: ${artist} - ${album}`);
+  await renderer.generateThumbnail(songPath, thumbnailPath, overwrite, artworkOnly);
 }
-const overwrite = _overwrite || overwrite_;
 
 await renderer.close();
 
@@ -42,7 +49,7 @@ const tempArtwork = await (async () => {
   return new Promise(async (r) => {
     var response = null;
     var _prompt_ = async () => {
-      var t = await prompt("Delete artwork after video is generated? (Y/N): ");
+      var t = await prompt(`Delete artwork after video${inputs.length > 1 ? "s" : ""} ${inputs.length > 1 ? "are" : "is"} generated? (Y/N): `);
       if (t.toUpperCase() == "Y" || t.toUpperCase() == "N") {
         response = t;
       } else {
@@ -59,11 +66,15 @@ const tempArtwork = await (async () => {
 
 Logger.debug(`${tempArtwork}`);
 
-for (let i = 0; i < inputs.length; i++) {
-  const songPath = inputs[i];
+for (let i: number = 0; i < inputs.length; i++) {
+  const songPath: string = inputs[i];
+  if (termed.indexOf(songPath) >= 0) {
+    Logger.log(basename(songPath) + " skipped! Overwrite denied.");
+    continue;
+  }
   const thumbnailPath = extRename(outputs[i], ".png");
   const videoPath = outputs[i];
-  Logger.log("Generating video...");
+  Logger.log(basename(songPath) + " | Generating video...");
   Logger.debug(songPath);
   Logger.debug(thumbnailPath);
   Logger.debug(videoPath);
@@ -81,7 +92,7 @@ for (let i = 0; i < inputs.length; i++) {
     -c:a aac \
     -shortest \
     "${videoPath}"\
-    ${overwrite ? "-y" : "-n"}`);
+    ${allowed.indexOf(songPath) >= 0 ? "-y" : "-n"}`);
   if (tempArtwork) {
     Logger.debug("Removing " + thumbnailPath);
     rmSync(thumbnailPath);
@@ -107,9 +118,11 @@ export async function prompt(prompt: string): Promise<string> {
   }));
 }
 
-export function term() {
-  Logger.critical("Ending process...");
-  process.exit(0);
+export function term(songPath: string) {
+  termed.push(songPath);
+}
+export function allow(songPath: string) {
+  allowed.push(songPath);
 }
 export function end() {
   Logger.log("Done!");

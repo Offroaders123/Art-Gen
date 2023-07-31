@@ -2,14 +2,14 @@ import { createServer } from "node:http";
 import { launch } from "puppeteer-core";
 import { getChromePath } from "chrome-launcher";
 import { readFile, writeFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { basename, resolve } from "node:path";
 import { overwrite } from "./args.js";
 import { readTags } from "./jsmediatags.js";
 
 import type { Server } from "node:http";
 import type { Browser } from "puppeteer-core";
 import type { MediaTags } from "./jsmediatags.js";
-import { Logger, prompt, term } from "./index.js";
+import { Logger, allow, prompt, term } from "./index.js";
 import { existsSync } from "node:fs";
 
 const SERVER_PATH = "http://localhost:3000";
@@ -42,7 +42,6 @@ async function generateSource(tags: MediaTags): Promise<string> {
   const index = new URL("../index.html", import.meta.url);
   const source = await readFile(index, { encoding: "utf-8" });
   const { title, artist, album, artwork } = tags;
-  Logger.log(`${title}: ${artist} - ${album}`);
   Logger.log("Generating thumbnail...\n");
   return source
     .replaceAll("%TITLE%", title)
@@ -72,16 +71,16 @@ class ThumbnailGenerator {
         return new Promise(async (r) => {
           var response = null;
           var _prompt_ = async () => {
-            var t = await prompt("Video file already exists! Would you like to overwrite? (Y/N): ");
+            var t = await prompt("File already exists! Would you like to overwrite? (Y/N): ");
             if (t.toUpperCase() == "Y" || t.toUpperCase() == "N") {
               response = t;
+              if (t.toUpperCase() == "N") Logger.lineBreak();
             } else {
               Logger.warning('Invalid response! Answer with "Y" or "N"!\n');
               await _prompt_();
             }
           }
           await _prompt_();
-          Logger.lineBreak();
           Logger.debug(`${response}`);
           r(response == "Y");
         });
@@ -90,6 +89,10 @@ class ThumbnailGenerator {
       overwrite = true;
     }
     return new Promise(async (_resolve) => {
+      if (!overwrite) {
+        term(songPath);
+        return _resolve(overwrite);
+      }
       const page = await this.#browser.newPage();
       const renderPath = new URL(SERVER_PATH);
       renderPath.searchParams.set("songPath", encodeURIComponent(resolve(songPath)));
@@ -100,13 +103,9 @@ class ThumbnailGenerator {
       const thumbnail = await page.screenshot();
       Logger.debug(thumbnail);
 
-      if (!overwrite) {
-        term();
-        _resolve(overwrite);
-      } else {
-        await writeFile(thumbnailPath, thumbnail);
-        _resolve(overwrite);
-      }
+      await writeFile(thumbnailPath, thumbnail);
+      allow(songPath);
+      _resolve(overwrite);
     });
   }
 
