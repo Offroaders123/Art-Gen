@@ -72,7 +72,11 @@ var cycleFolders = async function (i: number = 0) {
 await cycleFolders();
 
 for (const key in loadedFolders) {
-  if (loadedFolders[key].length > 0) Logger.info(`Found: ${loadedFolders[key].join(", ")} in ${key}`);
+  var coloredNames = loadedFolders[key];
+  coloredNames.forEach((n, i) => {
+    coloredNames[i] = chalk.greenBright(n);
+  });
+  if (loadedFolders[key].length > 0) Logger.info(`Found: ${coloredNames.join(", ")} in ${chalk.hex("#F30BE5")(key)}`);
 }
 
 Logger.debug(inputs);
