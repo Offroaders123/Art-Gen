@@ -2,56 +2,58 @@ import { createServer } from "node:http";
 import { launch } from "puppeteer-core";
 import { getChromePath } from "chrome-launcher";
 import { readFile, writeFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { basename, resolve } from "node:path";
 import { overwrite } from "./args.js";
 import { readTags } from "./jsmediatags.js";
 
 import type { Server } from "node:http";
 import type { Browser } from "puppeteer-core";
 import type { MediaTags } from "./jsmediatags.js";
+import { Logger, allow, prompt, queueFinish, term } from "./index.js";
+import { existsSync } from "node:fs";
 
 const SERVER_PATH = "http://localhost:3000";
 
 export async function createRenderer(): Promise<ThumbnailGenerator> {
   const server = await startServer();
   const browser = await launchBrowser();
-  return new ThumbnailGenerator(server,browser);
+  return new ThumbnailGenerator(server, browser);
 }
 
 async function startServer(): Promise<Server> {
-  const server = createServer(async (request,response) => {
+  const server = createServer(async (request, response) => {
     const url = new URL(`${SERVER_PATH}${request.url}`);
-    // console.log(url.toString());
+    Logger.debug(url.toString());
     if (url.searchParams.size === 0) return new Promise(resolve => response.end(resolve));
     const songPath = decodeURIComponent(url.searchParams.get("songPath")!);
-    console.log(`\n${songPath}`);
+    const threaded = decodeURIComponent(url.searchParams.get("threaded")!) == "true";
+    Logger.debug(`${songPath}\n`);
     const song = await readFile(songPath);
     const tags = await readTags(song);
-    const source = await generateSource(tags);
-    response.writeHead(200,{ "Content-Type": "text/html" });
+    const source = await generateSource(tags, threaded);
+    response.writeHead(200, { "Content-Type": "text/html" });
     response.write(source);
     await new Promise(resolve => response.end(resolve));
   });
-  await new Promise<void>(resolve => server.listen(3000,resolve));
+  await new Promise<void>(resolve => server.listen(3000, resolve));
   return server;
 }
 
-async function generateSource(tags: MediaTags): Promise<string> {
-  const index = new URL("../index.html",import.meta.url);
-  const source = await readFile(index,{ encoding: "utf-8" });
+async function generateSource(tags: MediaTags, threaded: boolean): Promise<string> {
+  const index = new URL("../index.html", import.meta.url);
+  const source = await readFile(index, { encoding: "utf-8" });
   const { title, artist, album, artwork } = tags;
-  console.log(`${title}: ${artist} - ${album}`);
-  console.log("Generating thumbnail...");
+  if (!threaded) Logger.log(`${threaded ? title + " | " : ""}Generating thumbnail...\n`);
   return source
-    .replaceAll("%TITLE%",title)
-    .replaceAll("%ARTIST%",artist)
-    .replaceAll("%ALBUM%",album)
-    .replaceAll("%ARTWORK%",artwork);
+    .replaceAll("%TITLE%", title)
+    .replaceAll("%ARTIST%", artist)
+    .replaceAll("%ALBUM%", album)
+    .replaceAll("%ARTWORK%", artwork);
 }
 
 async function launchBrowser(): Promise<Browser> {
   const executablePath = getChromePath();
-  return launch({ headless: "new", executablePath });
+  return launch({ headless: true, executablePath });
 }
 
 class ThumbnailGenerator {
@@ -63,17 +65,25 @@ class ThumbnailGenerator {
     this.#browser = browser;
   }
 
-  async generateThumbnail(songPath: string, thumbnailPath: string): Promise<void> {
-    const page = await this.#browser.newPage();
-    const renderPath = new URL(SERVER_PATH);
-    renderPath.searchParams.set("songPath",encodeURIComponent(resolve(songPath)));
+  async generateThumbnail(songPath: string, thumbnailPath: string, overwrite: boolean, threaded: boolean): Promise<boolean> {
+    Logger.debug(songPath);
+    return new Promise(async (_resolve) => {
+      const page = await this.#browser.newPage();
+      const renderPath = new URL(SERVER_PATH);
+      renderPath.searchParams.set("songPath", encodeURIComponent(resolve(songPath)));
+      renderPath.searchParams.set("threaded", encodeURIComponent(threaded));
 
-    await page.goto(renderPath.toString(),{ waitUntil: "networkidle0" });
-    await page.setViewport({ width: 1920, height: 1080 });
+      await page.goto(renderPath.toString(), { waitUntil: "networkidle0" });
+      await page.setViewport({ width: 1920, height: 1080 });
 
-    const thumbnail = await page.screenshot();
-    // console.log(thumbnail);
-    await writeFile(thumbnailPath,thumbnail,{ flag: overwrite ? undefined : "wx" });
+      const thumbnail = await page.screenshot();
+      Logger.debug(thumbnail);
+
+      await writeFile(thumbnailPath, thumbnail);
+      allow(songPath);
+      queueFinish(songPath);
+      _resolve(overwrite);
+    });
   }
 
   async close(): Promise<void> {
