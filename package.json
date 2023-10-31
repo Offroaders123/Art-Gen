@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "bin": {
-    "art-gen": "./src/index.ts"
+    "art-gen": "./src/bin/index.ts"
   },
   "scripts": {
     "build": "tsc --project ./tsconfig.build.json",

@@ -4,7 +4,7 @@ import { extname } from "node:path";
 import { exec as execCallback } from "node:child_process";
 import { promisify } from "node:util";
 import { inputs, artworkOnly, overwrite } from "./args.js";
-import { createRenderer } from "./thumbnail.js";
+import { createRenderer } from "../thumbnail.js";
 
 const exec = promisify(execCallback);
 
@@ -21,7 +21,7 @@ const renderer = await createRenderer();
 for (let i = 0; i < inputs.length; i++){
   const songPath = inputs[i]!;
   const thumbnailPath: string = artworkOnly ? outputs[i]! : extRename(outputs[i]!,".png");
-  await renderer.generateThumbnail(songPath,thumbnailPath);
+  await renderer.generateThumbnail(songPath,thumbnailPath,overwrite);
 }
 
 await renderer.close();

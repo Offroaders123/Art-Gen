@@ -3,7 +3,6 @@ import { launch } from "puppeteer-core";
 import { getChromePath } from "chrome-launcher";
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { overwrite } from "./args.js";
 import { readTags } from "./jsmediatags.js";
 
 import type { Server } from "node:http";
@@ -63,7 +62,7 @@ class ThumbnailGenerator {
     this.#browser = browser;
   }
 
-  async generateThumbnail(songPath: string, thumbnailPath: string): Promise<void> {
+  async generateThumbnail(songPath: string, thumbnailPath: string, overwrite: boolean = false): Promise<void> {
     const page = await this.#browser.newPage();
     const renderPath = new URL(SERVER_PATH);
     renderPath.searchParams.set("songPath",encodeURIComponent(resolve(songPath)));
