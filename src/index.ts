@@ -1,11 +1,17 @@
 import { extname } from "node:path";
-import { exec as execCallback } from "node:child_process";
+import { exec } from "node:child_process";
 import { promisify } from "node:util";
 import { createRenderer } from "./thumbnail.js";
 
-const exec = promisify(execCallback);
+const execAsync = promisify(exec);
 
-export async function generateArtTrack(inputs: string[], artworkOnly: boolean = false, overwrite: boolean = false): Promise<void> {
+export interface ArtTrackOptions {
+  artworkOnly?: boolean;
+  overwrite?: boolean;
+}
+
+export async function generateArtTracks(inputs: string[], options?: ArtTrackOptions): Promise<void>;
+export async function generateArtTracks(inputs: string[], { artworkOnly, overwrite }: ArtTrackOptions = { artworkOnly: false, overwrite: false }): Promise<void> {
   const outputs: string[] = inputs.map(item => extRename(item,artworkOnly ? ".png" : ".mp4"));
 
   const renderer = await createRenderer();
@@ -28,7 +34,7 @@ export async function generateArtTrack(inputs: string[], artworkOnly: boolean = 
     // console.log(songPath);
     // console.log(thumbnailPath);
     // console.log(videoPath);
-    await exec(`ffmpeg \
+    await execAsync(`ffmpeg \
       -loop 1 \
       -framerate 1 \
       -i "${thumbnailPath}" \
