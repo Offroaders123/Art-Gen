@@ -19,8 +19,8 @@ const outputs = inputs.map(item => extRename(item,artworkOnly ? ".png" : ".mp4")
 const renderer = await createRenderer();
 
 for (let i = 0; i < inputs.length; i++){
-  const songPath = inputs[i];
-  const thumbnailPath = artworkOnly ? outputs[i] : extRename(outputs[i],".png");
+  const songPath = inputs[i]!;
+  const thumbnailPath: string = artworkOnly ? outputs[i]! : extRename(outputs[i]!,".png");
   await renderer.generateThumbnail(songPath,thumbnailPath);
 }
 
@@ -29,9 +29,9 @@ await renderer.close();
 if (artworkOnly) process.exit(0);
 
 for (let i = 0; i < inputs.length; i++){
-  const songPath = inputs[i];
-  const thumbnailPath = extRename(outputs[i],".png");
-  const videoPath = outputs[i];
+  const songPath: string = inputs[i]!;
+  const thumbnailPath = extRename(outputs[i]!,".png");
+  const videoPath: string = outputs[i]!;
   console.log("Generating video...");
   // console.log(songPath);
   // console.log(thumbnailPath);

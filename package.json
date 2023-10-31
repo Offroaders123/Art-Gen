@@ -2,19 +2,21 @@
   "name": "art-gen",
   "private": true,
   "type": "module",
-  "bin": "./src/index.ts",
+  "bin": {
+    "art-gen": "./src/index.ts"
+  },
   "scripts": {
-    "build": "tsc -p ./tsconfig.build.json",
-    "dev": "tsc -w -p ./tsconfig.build.json"
+    "build": "tsc --project ./tsconfig.build.json",
+    "dev": "tsc --watch"
   },
   "dependencies": {
     "chrome-launcher": "^0.15.2",
     "jsmediatags": "^3.9.7",
-    "puppeteer-core": "^20.8.2"
+    "puppeteer-core": "^20.9.0"
   },
   "devDependencies": {
-    "@types/jsmediatags": "^3.9.3",
-    "@types/node": "^20.4.2",
-    "typescript": "^5.1.6"
+    "@types/jsmediatags": "^3.9.5",
+    "@types/node": "^20.8.9",
+    "typescript": "^5.2.2"
   }
 }
