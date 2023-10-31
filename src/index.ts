@@ -12,6 +12,10 @@ export interface ArtTrackOptions {
 
 export async function generateArtTracks(inputs: string[], options?: ArtTrackOptions): Promise<void>;
 export async function generateArtTracks(inputs: string[], { artworkOnly, overwrite }: ArtTrackOptions = { artworkOnly: false, overwrite: false }): Promise<void> {
+  if (inputs.length === 0){
+    throw new Error("Must provide song file path inputs");
+  }
+
   const outputs: string[] = inputs.map(item => extRename(item,artworkOnly ? ".png" : ".mp4"));
 
   const renderer = await createRenderer();
