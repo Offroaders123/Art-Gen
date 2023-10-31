@@ -2,8 +2,10 @@
   "name": "art-gen",
   "private": true,
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "bin": {
-    "art-gen": "./src/bin/index.ts"
+    "art-gen": "./dist/bin/index.js"
   },
   "scripts": {
     "build": "tsc --project ./tsconfig.build.json",

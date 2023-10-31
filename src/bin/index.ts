@@ -1,4 +1,4 @@
-#!/usr/bin/env npx tsx
+#!/usr/bin/env node
 
 import { generateArtTracks } from "../index.js";
 import { inputs, artworkOnly, overwrite } from "./args.js";
