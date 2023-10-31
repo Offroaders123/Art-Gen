@@ -38,7 +38,7 @@ async function startServer(): Promise<Server> {
 
 async function generateSource(tags: MediaTags): Promise<string> {
   const index = new URL("../index.html",import.meta.url);
-  const source = await readFile(index,{ encoding: "utf-8" });
+  const source: string = await readFile(index,{ encoding: "utf-8" });
   const { title, artist, album, artwork } = tags;
   console.log(`${title}: ${artist} - ${album}`);
   console.log("Generating thumbnail...");
@@ -50,7 +50,7 @@ async function generateSource(tags: MediaTags): Promise<string> {
 }
 
 async function launchBrowser(): Promise<Browser> {
-  const executablePath = getChromePath();
+  const executablePath: string = getChromePath();
   return launch({ headless: "new", executablePath });
 }
 

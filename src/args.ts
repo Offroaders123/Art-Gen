@@ -2,8 +2,13 @@ const COMMAND_PATTERN = /^--|-/;
 const ARTWORK_ONLY_PATTERN = /^--artwork-only|-a$/;
 const OVERWRITE_PATTERN = /^--overwrite|-w$/;
 
-const args = process.argv.slice(2);
+const args: string[] = process.argv.slice(2);
 const commands: string[] = [];
+
+process.on("uncaughtException",error => {
+  console.error(`${error}`);
+  process.exit(1);
+});
 
 export const inputs: string[] = [];
 

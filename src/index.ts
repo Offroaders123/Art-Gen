@@ -14,7 +14,7 @@ console.log("-- An app to generate thumbnails for YouTube Art Tracks! --\n");
 if (artworkOnly) console.log("[artwork only]");
 if (overwrite) console.log("[overwrite]");
 
-const outputs = inputs.map(item => extRename(item,artworkOnly ? ".png" : ".mp4"));
+const outputs: string[] = inputs.map(item => extRename(item,artworkOnly ? ".png" : ".mp4"));
 
 const renderer = await createRenderer();
 
