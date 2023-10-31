@@ -12,19 +12,12 @@ process.on("uncaughtException",error => {
 
 export const inputs: string[] = [];
 
-for (const item of args){
+for (const arg of args){
   switch (true){
-    case ARTWORK_ONLY_PATTERN.test(item):
-    case OVERWRITE_PATTERN.test(item): {
-      commands.push(item);
-      break;
-    }
-    case COMMAND_PATTERN.test(item): {
-      throw new Error(`Unexpected command '${item}'`);
-    }
-    default: {
-      inputs.push(item);
-    }
+    case ARTWORK_ONLY_PATTERN.test(arg):
+    case OVERWRITE_PATTERN.test(arg): commands.push(arg); break;
+    case COMMAND_PATTERN.test(arg): throw new Error(`Unexpected command '${arg}'`);
+    default: inputs.push(arg); break;
   }
 }
 
