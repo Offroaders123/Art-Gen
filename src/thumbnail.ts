@@ -50,7 +50,7 @@ async function generateSource(tags: MediaTags): Promise<string> {
 
 async function launchBrowser(): Promise<Browser> {
   const executablePath: string = getChromePath();
-  return launch({ headless: "new", executablePath });
+  return launch({ headless: true, executablePath });
 }
 
 class ThumbnailGenerator {

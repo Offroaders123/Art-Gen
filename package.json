@@ -5,20 +5,20 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "art-gen": "./dist/bin/index.js"
+    "art-gen": "dist/bin/index.js"
   },
   "scripts": {
     "build": "tsc --project ./tsconfig.build.json",
     "dev": "tsc --watch"
   },
   "dependencies": {
-    "chrome-launcher": "^0.15.2",
+    "chrome-launcher": "^1.1.0",
     "jsmediatags": "^3.9.7",
-    "puppeteer-core": "^20.9.0"
+    "puppeteer-core": "^22.2.0"
   },
   "devDependencies": {
-    "@types/jsmediatags": "^3.9.5",
-    "@types/node": "^20.8.9",
-    "typescript": "^5.2.2"
+    "@types/jsmediatags": "^3.9.6",
+    "@types/node": "^20.11.19",
+    "typescript": "^5.3.3"
   }
 }
