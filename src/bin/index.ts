@@ -1,12 +1,21 @@
 #!/usr/bin/env node
 
-import { generateArtTracks } from "../index.js";
-import { inputs, artworkOnly, overwrite } from "./args.js";
+import { Command } from "commander";
 
-console.log("Art Gen");
-console.log("-- An app to generate thumbnails for YouTube Art Tracks! --\n");
+const program = new Command();
 
-if (artworkOnly) console.log("[artwork only]");
-if (overwrite) console.log("[overwrite]");
+program
+  .option("-a, --artwork-only")
+  .option("-w, --overwrite")
+  .parse();
 
-await generateArtTracks(inputs,{ artworkOnly, overwrite });
+// import { generateArtTracks } from "../index.js";
+// import { inputs, artworkOnly, overwrite } from "./args.js";
+
+// console.log("Art Gen");
+// console.log("-- An app to generate thumbnails for YouTube Art Tracks! --\n");
+
+// if (artworkOnly) console.log("[artwork only]");
+// if (overwrite) console.log("[overwrite]");
+
+// await generateArtTracks(inputs,{ artworkOnly, overwrite });
