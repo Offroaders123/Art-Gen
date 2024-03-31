@@ -4,9 +4,6 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "bin": {
-    "art-gen": "dist/bin/index.js"
-  },
   "scripts": {
     "build": "tsc --project ./tsconfig.build.json",
     "dev": "tsc --watch"
