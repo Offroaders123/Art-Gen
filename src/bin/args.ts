@@ -1,4 +1,4 @@
-const COMMAND_PATTERN = /^--|-/;
+const COMMAND_PATTERN = /^--/;
 const ARTWORK_ONLY_PATTERN = /^--artwork-only|-a$/;
 const OVERWRITE_PATTERN = /^--overwrite|-w$/;
 

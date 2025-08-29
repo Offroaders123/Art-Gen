@@ -46,10 +46,10 @@ export async function generateArtTracks(inputs: string[], { artworkOnly, overwri
       -map 0 \
       -map 1:a \
       -c:v libx264 \
-      -preset ultrafast \
+      -preset veryslow \
       -tune stillimage \
       -vf "scale=out_color_matrix=bt709,fps=10,format=yuv420p" \
-      -c:a aac \
+      -c:a copy \
       -shortest \
       "${videoPath}"\
       ${overwrite ? "-y" : "-n"}`);
