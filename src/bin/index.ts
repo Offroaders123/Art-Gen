@@ -9,4 +9,4 @@ console.log("-- An app to generate thumbnails for YouTube Art Tracks! --\n");
 if (artworkOnly) console.log("[artwork only]");
 if (overwrite) console.log("[overwrite]");
 
-await generateArtTracks(inputs,{ artworkOnly, overwrite });
+await generateArtTracks(inputs, { artworkOnly, overwrite });

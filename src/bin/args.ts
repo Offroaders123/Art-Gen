@@ -5,15 +5,15 @@ const OVERWRITE_PATTERN = /^--overwrite|-w$/;
 const args: string[] = process.argv.slice(2);
 const commands: string[] = [];
 
-process.on("uncaughtException",error => {
+process.on("uncaughtException", error => {
   console.error(`${error}`);
   process.exit(1);
 });
 
 export const inputs: string[] = [];
 
-for (const arg of args){
-  switch (true){
+for (const arg of args) {
+  switch (true) {
     case ARTWORK_ONLY_PATTERN.test(arg):
     case OVERWRITE_PATTERN.test(arg): commands.push(arg); break;
     case COMMAND_PATTERN.test(arg): throw new Error(`Unexpected command '${arg}'`);
@@ -21,7 +21,7 @@ for (const arg of args){
   }
 }
 
-if (inputs.length === 0){
+if (inputs.length === 0) {
   throw new Error("Must provide song file path inputs");
 }
 

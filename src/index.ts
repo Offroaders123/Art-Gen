@@ -12,27 +12,27 @@ export interface ArtTrackOptions {
 
 export async function generateArtTracks(inputs: string[], options?: ArtTrackOptions): Promise<void>;
 export async function generateArtTracks(inputs: string[], { artworkOnly, overwrite }: ArtTrackOptions = { artworkOnly: false, overwrite: false }): Promise<void> {
-  if (inputs.length === 0){
+  if (inputs.length === 0) {
     throw new Error("Must provide song file path inputs");
   }
 
-  const outputs: string[] = inputs.map(item => extRename(item,artworkOnly ? ".png" : ".mp4"));
+  const outputs: string[] = inputs.map(item => extRename(item, artworkOnly ? ".png" : ".mp4"));
 
   const renderer = await createRenderer();
 
-  for (let i = 0; i < inputs.length; i++){
+  for (let i = 0; i < inputs.length; i++) {
     const songPath = inputs[i]!;
-    const thumbnailPath: string = artworkOnly ? outputs[i]! : extRename(outputs[i]!,".png");
-    await renderer.generateThumbnail(songPath,thumbnailPath,overwrite);
+    const thumbnailPath: string = artworkOnly ? outputs[i]! : extRename(outputs[i]!, ".png");
+    await renderer.generateThumbnail(songPath, thumbnailPath, overwrite);
   }
 
   await renderer.close();
 
   if (artworkOnly) return;
 
-  for (let i = 0; i < inputs.length; i++){
+  for (let i = 0; i < inputs.length; i++) {
     const songPath: string = inputs[i]!;
-    const thumbnailPath = extRename(outputs[i]!,".png");
+    const thumbnailPath = extRename(outputs[i]!, ".png");
     const videoPath: string = outputs[i]!;
     console.log("Generating video...");
     // console.log(songPath);
@@ -58,5 +58,5 @@ export async function generateArtTracks(inputs: string[], { artworkOnly, overwri
 
 function extRename(path: string, ext: string): string {
   const extension = extname(path);
-  return path.replace(extension,ext);
+  return path.replace(extension, ext);
 }

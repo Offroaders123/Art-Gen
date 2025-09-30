@@ -12,11 +12,11 @@ export interface MediaTags {
 type AllTags = Tags & { artwork?: string; };
 
 export async function readTags(song: Uint8Array): Promise<MediaTags> {
-  const allTags: AllTags = await new Promise<AllTags>((onSuccess,onError) => {
-    read(song,{
+  const allTags: AllTags = await new Promise<AllTags>((onSuccess, onError) => {
+    read(song, {
       onSuccess({ tags }) {
         const artwork: string | undefined = tags.picture !== undefined ? fromPictureToDataURL(tags.picture) : undefined;
-        const mediaTags: AllTags = Object.assign(tags,{ artwork });
+        const mediaTags: AllTags = Object.assign(tags, { artwork });
         onSuccess(mediaTags)
       },
       onError
