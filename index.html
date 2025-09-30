@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 
 <head>
-
   <title>Art Gen</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap">
-
   <style>
     body {
       margin: 0;
@@ -42,23 +40,22 @@
       margin-bottom: 44px;
     }
   </style>
-
 </head>
 
 <body>
-
   <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <filter id="blur">
-        <feGaussianBlur stdDeviation="30" color-interpolation-filters="sRGB"/>
+        <feGaussianBlur stdDeviation="30" color-interpolation-filters="sRGB" />
         <feComponentTransfer>
-          <feFuncA type="discrete" tableValues="1"/>
+          <feFuncA type="discrete" tableValues="1" />
         </feComponentTransfer>
       </filter>
     </defs>
-    <image x="0" y="0" width="1920" height="1080" filter="url(#blur)" href="%ARTWORK%" preserveAspectRatio="xMidYMid slice"/>
-    <rect x="0" y="0" width="1920" height="1080" fill="rgb(0 0 0 / 0.7)"/>
-    <image x="135" y="135" width="810" height="810" href="%ARTWORK%"/>
+    <image x="0" y="0" width="1920" height="1080" filter="url(#blur)" href="%ARTWORK%"
+      preserveAspectRatio="xMidYMid slice" />
+    <rect x="0" y="0" width="1920" height="1080" fill="rgb(0 0 0 / 0.7)" />
+    <image x="135" y="135" width="810" height="810" href="%ARTWORK%" />
     <foreignObject x="1058" y="135" width="789" height="810">
       <div id="main" xmlns="http://www.w3.org/1999/xhtml">
         <span id="title">%TITLE%</span>
@@ -67,7 +64,6 @@
       </div>
     </foreignObject>
   </svg>
-
 </body>
 
 </html>
