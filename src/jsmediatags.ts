@@ -1,6 +1,6 @@
 import { read } from "jsmediatags";
 
-import type { Tags, PictureType } from "jsmediatags/types";
+import type { Tags, PictureType } from "jsmediatags/types/index.js";
 
 export interface MediaTags {
   title: string;

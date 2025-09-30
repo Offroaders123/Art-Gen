@@ -24,7 +24,7 @@ async function startServer(): Promise<Server> {
     if (url.searchParams.size === 0) return new Promise(resolve => response.end(resolve));
     const songPath = decodeURIComponent(url.searchParams.get("songPath")!);
     console.log(`\n${songPath}`);
-    const song = await readFile(songPath);
+    const song = await readFile(songPath) as unknown as Uint8Array;
     const tags = await readTags(song);
     const source = await generateSource(tags);
     response.writeHead(200,{ "Content-Type": "text/html" });
@@ -70,7 +70,7 @@ class ThumbnailGenerator {
     await page.goto(renderPath.toString(),{ waitUntil: "networkidle0" });
     await page.setViewport({ width: 1920, height: 1080 });
 
-    const thumbnail = await page.screenshot();
+    const thumbnail = await page.screenshot() as unknown as Uint8Array;
     // console.log(thumbnail);
     await writeFile(thumbnailPath,thumbnail,{ flag: overwrite ? undefined : "wx" });
   }
